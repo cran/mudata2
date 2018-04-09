@@ -195,6 +195,12 @@ test_that("as_* functions produce the expected output type", {
   expect_is(as_col_spec("datetime"), "collector")
   expect_is(as_col_spec("wkt"), "collector_character")
   expect_is(as_col_spec("json"), "collector_character")
+  expect_is(as_col_spec("date"), "collector_date")
+  expect_is(as_col_spec("logical"), "collector_logical")
+  expect_is(as_col_spec("double"), "collector_double")
+  expect_is(as_col_spec("guess"), "collector_guess")
+  expect_is(as_col_spec("integer"), "collector_integer")
+  expect_is(as_col_spec("time"), "collector_time")
   
   # as_parser returns a parsing function that can be called with character(0)
   all_parsers <- sapply(c(allowed_types_readr, allowed_types_extra), function(type) {
@@ -202,6 +208,14 @@ test_that("as_* functions produce the expected output type", {
   })
   expect_true(all(vapply(all_parsers, is.function, logical(1))))
   expect_silent(lapply(all_parsers, function(x) try(x(character(0)))))
+})
+
+test_that("datetime parsing works as intended", {
+  dt <- lubridate::make_datetime(tz = "UTC")
+  expect_identical(
+    lubridate::tz(parse_mudata_datetime(mudata_prepare_column(dt), tzone = "")),
+    "UTC"
+  )
 })
 
 test_that("json parsing works as intended", {
@@ -220,17 +234,17 @@ test_that("json parsing works as intended", {
   expect_warning(parse_json(c("{'invalid_json'='not valid'}", json_test)),
                  "1 parsing failures in parse_json()")
   
-  expect_is(attr(parse_json("{'invalid_json'='not valid'}"), "problems"),
+  expect_is(attr(suppressWarnings(parse_json("{'invalid_json'='not valid'}")), "problems"),
             "data.frame")
   # json parsing failure should just return the invalid string
-  expect_identical(parse_json("{'invalid_json'='not valid'}")[[1]], 
+  expect_identical(suppressWarnings(parse_json("{'invalid_json'='not valid'}"))[[1]], 
                    NULL)
   
   # zero-length parsing
   expect_identical(parse_json(character(0)) %>% unclass(), list())
   
   # expect class
-  expect_is(parse_json("{}"), "json_column")
+  expect_is(parse_json('{}'), "json_column")
 })
 
 test_that("wkt parsing returns an sf::sfc", {
@@ -251,7 +265,7 @@ test_that("wkt parsing works when there are parsing errors/NA values", {
   
   wkt_test_invalid <- c("typo here", "POINT(0 0)", "", "NA", NA, "POINT(1 1)", 
                         "not wkt", "also not wkt", "POINT(2 2)")
-  result_invalid <- parse_wkt(wkt_test_invalid)
+  result_invalid <- suppressWarnings(parse_wkt(wkt_test_invalid))
   expect_is(result_invalid, "sfc")
   expect_length(result_invalid, 9)
   # nas as null

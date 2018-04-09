@@ -310,7 +310,9 @@ read_mudata_json_common <- function(fun, validate = TRUE, ...) {
     # use type_strs from generate_type_strs
     type_strs <- type_strs_from_columns(columns_tbl)
   } else {
-    type_strs <- type_strs_from_columns(NULL)
+    # without the columns table, parsers can't be reliably guessed when
+    # reading from JSON (because NAs are 'null's, which read as list()s)
+    stop("cannot read JSON to mudata without a columns table")
   }
   
   # extract and remove metadata, if present
@@ -553,7 +555,8 @@ mudata_prepare_column.list <- function(x, format = NA, ...) {
 #' @export 
 mudata_parse_column <- function(x, type_str = NA_character_, ...) {
   # check output class so that parsing doesn't occur if class is already correct
-  if(is.na(type_str) || inherits(x, parse_output_class(type_str))) {
+  # NA_character means "guess"
+  if(inherits(x, parse_output_class(type_str))) {
     x
   } else {
     as_parser(type_str)(x, ...)

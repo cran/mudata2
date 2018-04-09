@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dewey Dunnington" />
 
-<meta name="date" content="2017-11-10" />
+<meta name="date" content="2018-04-08" />
 
 <title>Creating mudata objects</title>
 
@@ -70,29 +70,28 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Creating mudata objects</h1>
 <h4 class="author"><em>Dewey Dunnington</em></h4>
-<h4 class="date"><em>2017-11-10</em></h4>
+<h4 class="date"><em>2018-04-08</em></h4>
 
 
 
 <p>As demonstrated in <code>vignette(&quot;mudata&quot;, package = &quot;mudata2&quot;)</code>, mudata objects are easy to use and have a quick data-to-analysis time. In contrast, getting data into the format takes a little more time, and requires some familiarity with <strong>dplyr</strong> and <strong>tidyr</strong>. This process is essentially the data cleaning step, except that instead of discarding all the information that you don’t need (or won’t fit in the output data structure), you can keep almost everything, possibly adding some documentation that didn’t previously exist. This is a front-end investment of time that will make subsequent users of the data better informed about how and why the data were collected in the first place.</p>
 <p>(Mostly) universal data (mudata) objects are created using the <code>mudata()</code> function, which at minimum takes a data frame/tibble with one row per measurement. As an example, I’ll use the data table from the <code>ns_climate</code> dataset:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mudata2)
-ns_climate %&gt;%<span class="st"> </span><span class="kw">tbl_data</span>()</code></pre></div>
+ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tbl_data</span>()</code></pre></div>
 <pre><code>## # A tibble: 115,541 x 7
-##              dataset          location         param       date value
-##                &lt;chr&gt;             &lt;chr&gt;         &lt;chr&gt;     &lt;date&gt; &lt;dbl&gt;
-##  1 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-01-01    NA
-##  2 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-02-01    NA
-##  3 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-03-01    NA
-##  4 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-04-01    NA
-##  5 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-05-01    NA
-##  6 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-06-01    NA
-##  7 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-07-01    NA
-##  8 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-08-01    NA
-##  9 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-09-01    NA
-## 10 ecclimate_monthly SABLE ISLAND 6454 mean_max_temp 1897-10-01  12.2
-## # ... with 115,531 more rows, and 2 more variables: flag &lt;chr&gt;,
-## #   flag_text &lt;chr&gt;</code></pre>
+##    dataset           location     param   date       value flag  flag_text
+##    &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;   &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+##  1 ecclimate_monthly SABLE ISLAN… mean_m… 1897-01-01  NA   M     Missing  
+##  2 ecclimate_monthly SABLE ISLAN… mean_m… 1897-02-01  NA   M     Missing  
+##  3 ecclimate_monthly SABLE ISLAN… mean_m… 1897-03-01  NA   M     Missing  
+##  4 ecclimate_monthly SABLE ISLAN… mean_m… 1897-04-01  NA   M     Missing  
+##  5 ecclimate_monthly SABLE ISLAN… mean_m… 1897-05-01  NA   M     Missing  
+##  6 ecclimate_monthly SABLE ISLAN… mean_m… 1897-06-01  NA   M     Missing  
+##  7 ecclimate_monthly SABLE ISLAN… mean_m… 1897-07-01  NA   M     Missing  
+##  8 ecclimate_monthly SABLE ISLAN… mean_m… 1897-08-01  NA   M     Missing  
+##  9 ecclimate_monthly SABLE ISLAN… mean_m… 1897-09-01  NA   M     Missing  
+## 10 ecclimate_monthly SABLE ISLAN… mean_m… 1897-10-01  12.2 &lt;NA&gt;  &lt;NA&gt;     
+## # ... with 115,531 more rows</code></pre>
 <p>At minimum the data table must contain the columns <code>param</code> and <code>value</code>. The <code>param</code> column contains the identifier of the measured parameter (a character vector), and the <code>value</code> column contains the value of the measurement (there is no restriction on what type this is except that it has to be the same type for all parameters; see below for ways around this). To represent measurements at more than one location, you can include a location column with location identifiers (a character vector). To represent measurements at more than one point in time, you can include a column between <code>param</code> and <code>value</code> specifying at what time the measurement was taken. To the right of the <code>value</code> column, you can include any columns needed to add context to <code>value</code> (I typically use this for uncertainty, detection limits, and comments on a particular measurement).</p>
 <p>In the context of <code>ns_climate</code>, the <code>location</code> column contains station names like “SABLE ISLAND”, the <code>param</code> column contains measurement names like “mean_max_temp”, and the point in time the measurement was taken is included in the <code>date</code> column. To the right of the <code>value</code> column, there are two columns that add extra “flag” information provided by Environment Canada. These data are distributed with Environment Canada climate downloads, but are often discarded because the 12 paired columns in the standard wide data format in which they are distributed are a bit unwieldy.</p>
 <p>In general, the steps to create a mudata object are:</p>
@@ -114,7 +113,7 @@ ns_climate %&gt;%<span class="st"> </span><span class="kw">tbl_data</span>()</co
 <div id="case-1-wide-summarised-data" class="section level3">
 <h3>Case 1: Wide, summarised data</h3>
 <p>Parameter-wide, summarised data is the probably the most common form of data. If you’ve gotten this far, there is a good chance that you have data like this hanging around somewhere:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pocmajwide &lt;-<span class="st"> </span>pocmajsum %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pocmajwide &lt;-<span class="st"> </span>pocmajsum <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(core, depth, Ca, V, Ti)</code></pre></div>
 <table>
 <thead>
@@ -214,10 +213,10 @@ ns_climate %&gt;%<span class="st"> </span><span class="kw">tbl_data</span>()</co
 </tbody>
 </table>
 <p>This is a small subset of paleolimnological data for two sediment cores near Halifax, Nova Scotia. The data is a multi-parameter spatiotemporal dataset because it contains multiple parameters (calcium, titanium, and vanadium concentrations) measured along a common axis (depth in the sediment core) at discrete locations (cores named MAJ-1 and POC-2). Currently, our columns are not named properly: for the mudata format the terminology is ‘location’ not ‘core’. The <code>rename()</code> function is the easiest way to do this.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pocmajwide &lt;-<span class="st"> </span>pocmajwide %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pocmajwide &lt;-<span class="st"> </span>pocmajwide <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">rename</span>(<span class="dt">location =</span> core)</code></pre></div>
 <p>Finally, we need to get the data into a parameter-long format, with a column named <code>param</code> and our actual values in a single column called <code>value</code>. This can be done using the <code>gather()</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pocmajlong &lt;-<span class="st"> </span>pocmajwide %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pocmajlong &lt;-<span class="st"> </span>pocmajwide <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">gather</span>(Ca, Ti, V, <span class="dt">key =</span> <span class="st">&quot;param&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;value&quot;</span>)</code></pre></div>
 <p>The (first six rows of the) data now look like this:</p>
 <table>
@@ -281,14 +280,14 @@ ns_climate %&gt;%<span class="st"> </span><span class="kw">tbl_data</span>()</co
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 5
-##   dataset location param depth    value
-##     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;int&gt;    &lt;dbl&gt;
-## 1 default    MAJ-1    Ca     0 1884.667
-## 2 default    MAJ-1    Ca     1 1418.000
-## 3 default    MAJ-1    Ca     2 1550.000
-## 4 default    MAJ-1    Ca     3 1448.000
-## 5 default    MAJ-1    Ca     4 1247.000
-## 6 default    MAJ-1    Ca     5 1412.333</code></pre>
+##   dataset location param depth value
+##   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;dbl&gt;
+## 1 default MAJ-1    Ca        0  1885
+## 2 default MAJ-1    Ca        1  1418
+## 3 default MAJ-1    Ca        2  1550
+## 4 default MAJ-1    Ca        3  1448
+## 5 default MAJ-1    Ca        4  1247
+## 6 default MAJ-1    Ca        5  1412</code></pre>
 </div>
 <div id="case-2-wide-summarised-data-with-uncertainty" class="section level3">
 <h3>Case 2: Wide, summarised data with uncertainty</h3>
@@ -431,7 +430,7 @@ ns_climate %&gt;%<span class="st"> </span><span class="kw">tbl_data</span>()</co
 </tbody>
 </table>
 <p>As above, we need to rename the <code>core</code> column to <code>location</code> using the <code>rename()</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pocmajwide &lt;-<span class="st"> </span>pocmajsum %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pocmajwide &lt;-<span class="st"> </span>pocmajsum <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">rename</span>(<span class="dt">location =</span> core)</code></pre></div>
 <p>Then (also as above), we need to <code>gather()</code> the data to get it into long form. Because we have paired columns, this is handled by a different function (from the mudata package) called <code>parallel_melt()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pocmajlong &lt;-<span class="st"> </span><span class="kw">parallel_gather</span>(pocmajwide, <span class="dt">key =</span> <span class="st">&quot;param&quot;</span>,
@@ -504,147 +503,146 @@ ns_climate %&gt;%<span class="st"> </span><span class="kw">tbl_data</span>()</co
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 6
-##   dataset location param depth    value       sd
-##     &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1 default    MAJ-1    Ca     0 1884.667 452.3542
-## 2 default    MAJ-1    Ca     1 1418.000       NA
-## 3 default    MAJ-1    Ca     2 1550.000       NA
-## 4 default    MAJ-1    Ca     3 1448.000       NA
-## 5 default    MAJ-1    Ca     4 1247.000       NA
-## 6 default    MAJ-1    Ca     5 1412.333 125.8941</code></pre>
+##   dataset location param depth value    sd
+##   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 default MAJ-1    Ca        0  1885   452
+## 2 default MAJ-1    Ca        1  1418    NA
+## 3 default MAJ-1    Ca        2  1550    NA
+## 4 default MAJ-1    Ca        3  1448    NA
+## 5 default MAJ-1    Ca        4  1247    NA
+## 6 default MAJ-1    Ca        5  1412   126</code></pre>
 </div>
 </div>
 <div id="adding-metadata" class="section level2">
 <h2>Adding metadata</h2>
 <p>When mudata objects are created using only the data table, the package creates the necessary tables for parameter, location, and dataset metadata (if you have these tables prepared already, you can pass them as the arguments <code>locations</code>, <code>params</code>, and <code>datasets</code>). These tables provide a place to put metadata, but doesn’t create any by default. This data is usually needed later, and including it in the object at the point of creation avoids others or future you from scratching their (your) heads with the question “where <em>did</em> core POC-2 come from anyway…”. To do this, you can update the tables using <code>update_params()</code>, <code>update_locations()</code>, and <code>update_datasets()</code>. The first argument of these functions is a vector of identifiers to update (or all of them if not specified), followed by key/value pairs.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># default parameter table</span>
-md %&gt;%
+md <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tbl_params</span>()</code></pre></div>
 <pre><code>## # A tibble: 3 x 2
 ##   dataset param
-##     &lt;chr&gt; &lt;chr&gt;
-## 1 default    Ca
-## 2 default    Ti
-## 3 default     V</code></pre>
+##   &lt;chr&gt;   &lt;chr&gt;
+## 1 default Ca   
+## 2 default Ti   
+## 3 default V</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># parameter table with metadata</span>
-md %&gt;%
-<span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) %&gt;%
+md <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tbl_params</span>()</code></pre></div>
 <pre><code>## # A tibble: 3 x 3
-##   dataset param                                   method
-##     &lt;chr&gt; &lt;chr&gt;                                    &lt;chr&gt;
-## 1 default    Ca Portable XRF Spectrometer (Olympus X-50)
-## 2 default    Ti Portable XRF Spectrometer (Olympus X-50)
-## 3 default     V Portable XRF Spectrometer (Olympus X-50)</code></pre>
+##   dataset param method                                  
+##   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;                                   
+## 1 default Ca    Portable XRF Spectrometer (Olympus X-50)
+## 2 default Ti    Portable XRF Spectrometer (Olympus X-50)
+## 3 default V     Portable XRF Spectrometer (Olympus X-50)</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># default location table</span>
-md %&gt;%
+md <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tbl_locations</span>()</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ##   dataset location
-##     &lt;chr&gt;    &lt;chr&gt;
-## 1 default    MAJ-1
-## 2 default    POC-2</code></pre>
+##   &lt;chr&gt;   &lt;chr&gt;   
+## 1 default MAJ-1   
+## 2 default POC-2</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># location table with metadata</span>
-md %&gt;%
-<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;MAJ-1&quot;</span>, <span class="dt">latitude =</span> -<span class="fl">64.298</span>, <span class="dt">longitude =</span> <span class="fl">44.819</span>,
-                   <span class="dt">lake =</span> <span class="st">&quot;Lake Major&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;POC-2&quot;</span>, <span class="dt">latitude =</span> -<span class="fl">65.985</span>, <span class="dt">longitude =</span> <span class="fl">44.913</span>,
-                   <span class="dt">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span>) %&gt;%
+md <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;MAJ-1&quot;</span>, <span class="dt">latitude =</span> <span class="op">-</span><span class="fl">64.298</span>, <span class="dt">longitude =</span> <span class="fl">44.819</span>,
+                   <span class="dt">lake =</span> <span class="st">&quot;Lake Major&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;POC-2&quot;</span>, <span class="dt">latitude =</span> <span class="op">-</span><span class="fl">65.985</span>, <span class="dt">longitude =</span> <span class="fl">44.913</span>,
+                   <span class="dt">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tbl_locations</span>()</code></pre></div>
 <pre><code>## # A tibble: 2 x 5
-##   dataset location latitude longitude          lake
-##     &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;         &lt;chr&gt;
-## 1 default    MAJ-1  -64.298    44.819    Lake Major
-## 2 default    POC-2  -65.985    44.913 Pockwock Lake</code></pre>
+##   dataset location latitude longitude lake         
+##   &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;        
+## 1 default MAJ-1       -64.3      44.8 Lake Major   
+## 2 default POC-2       -66.0      44.9 Pockwock Lake</code></pre>
 <p>The concept of a “dataset” is intended to refer to the source of a dataset, but could be anything that applies to data, params, and locations labelled with that dataset. In this case it would make sense to add that the source data is the <strong>mudata2</strong> package. The default name is “default”, which you can change in the <code>mudata()</code> function by passing <code>dataset_id</code> or by using <code>rename_datasets()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># default datasets table</span>
-md %&gt;%
+md <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tbl_datasets</span>()</code></pre></div>
 <pre><code>## # A tibble: 1 x 1
 ##   dataset
-##     &lt;chr&gt;
+##   &lt;chr&gt;  
 ## 1 default</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># datasets table with metadata</span>
-md %&gt;%
-<span class="st">  </span><span class="kw">update_datasets</span>(<span class="dt">source =</span> <span class="st">&quot;R package mudata2, version 1.0.0&quot;</span>) %&gt;%
+md <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_datasets</span>(<span class="dt">source =</span> <span class="st">&quot;R package mudata2, version 1.0.0&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tbl_datasets</span>()</code></pre></div>
 <pre><code>## # A tibble: 1 x 2
-##   dataset                           source
-##     &lt;chr&gt;                            &lt;chr&gt;
+##   dataset source                          
+##   &lt;chr&gt;   &lt;chr&gt;                           
 ## 1 default R package mudata2, version 1.0.0</code></pre>
 <p>All together, the param/location/dataset documentation looks like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">md_doc &lt;-<span class="st"> </span>md %&gt;%
-<span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;MAJ-1&quot;</span>, <span class="dt">latitude =</span> -<span class="fl">63.486</span>, <span class="dt">longitude =</span> <span class="fl">44.732</span>,
-                   <span class="dt">lake =</span> <span class="st">&quot;Lake Major&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;POC-2&quot;</span>, <span class="dt">latitude =</span> -<span class="fl">63.839</span>, <span class="dt">longitude =</span> <span class="fl">44.794</span>,
-                   <span class="dt">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span>) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">md_doc &lt;-<span class="st"> </span>md <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;MAJ-1&quot;</span>, <span class="dt">latitude =</span> <span class="op">-</span><span class="fl">63.486</span>, <span class="dt">longitude =</span> <span class="fl">44.732</span>,
+                   <span class="dt">lake =</span> <span class="st">&quot;Lake Major&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;POC-2&quot;</span>, <span class="dt">latitude =</span> <span class="op">-</span><span class="fl">63.839</span>, <span class="dt">longitude =</span> <span class="fl">44.794</span>,
+                   <span class="dt">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">update_datasets</span>(<span class="dt">source =</span> <span class="st">&quot;R package mudata2, version 1.0.0&quot;</span>)</code></pre></div>
 </div>
 <div id="adding-column-metadata" class="section level2">
 <h2>Adding column metadata</h2>
 <p>The <code>mudata()</code> constructor automatically generates a barebones columns table (<code>tbl_columns()</code>), but since the creation of the object we have created new columns that need documentation. Thus, before documenting columns using <code>update_columns()</code>, it is necessary to call <code>update_columns_table()</code> to synchronize the columns table with the object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">md_doc &lt;-<span class="st"> </span>md_doc %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">md_doc &lt;-<span class="st"> </span>md_doc <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">update_columns_table</span>()</code></pre></div>
 <p>Then, you can use <code>update_columns()</code> to add information about various columns to the object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># default columns table</span>
-md_doc %&gt;%
+md_doc <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tbl_columns</span>()</code></pre></div>
 <pre><code>## # A tibble: 16 x 4
-##    dataset     table    column      type
-##      &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
-##  1 default      data   dataset character
-##  2 default      data  location character
-##  3 default      data     param character
-##  4 default      data     depth   integer
-##  5 default      data     value    double
-##  6 default      data        sd    double
-##  7 default locations   dataset character
-##  8 default locations  location character
-##  9 default locations  latitude    double
-## 10 default locations longitude    double
-## 11 default locations      lake character
-## 12 default    params   dataset character
-## 13 default    params     param character
-## 14 default    params    method character
-## 15 default  datasets   dataset character
-## 16 default  datasets    source character</code></pre>
+##    dataset table     column    type     
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    
+##  1 default data      dataset   character
+##  2 default data      location  character
+##  3 default data      param     character
+##  4 default data      depth     integer  
+##  5 default data      value     double   
+##  6 default data      sd        double   
+##  7 default locations dataset   character
+##  8 default locations location  character
+##  9 default locations latitude  double   
+## 10 default locations longitude double   
+## 11 default locations lake      character
+## 12 default params    dataset   character
+## 13 default params    param     character
+## 14 default params    method    character
+## 15 default datasets  dataset   character
+## 16 default datasets  source    character</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># columns with metadata </span>
-md_doc %&gt;%
-<span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;depth&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Depth in sediment core (cm)&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;sd&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Standard deviation uncertainty of n=3 values&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">tbl_columns</span>() %&gt;%
+md_doc <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;depth&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Depth in sediment core (cm)&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;sd&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Standard deviation uncertainty of n=3 values&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">tbl_columns</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(dataset, table, column, description, type)</code></pre></div>
 <pre><code>## # A tibble: 16 x 5
-##    dataset     table    column
-##      &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;
-##  1 default      data   dataset
-##  2 default      data  location
-##  3 default      data     param
-##  4 default      data     depth
-##  5 default      data     value
-##  6 default      data        sd
-##  7 default locations   dataset
-##  8 default locations  location
-##  9 default locations  latitude
-## 10 default locations longitude
-## 11 default locations      lake
-## 12 default    params   dataset
-## 13 default    params     param
-## 14 default    params    method
-## 15 default  datasets   dataset
-## 16 default  datasets    source
-## # ... with 2 more variables: description &lt;chr&gt;, type &lt;chr&gt;</code></pre>
+##    dataset table     column    description                         type   
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                               &lt;chr&gt;  
+##  1 default data      dataset   &lt;NA&gt;                                charac…
+##  2 default data      location  &lt;NA&gt;                                charac…
+##  3 default data      param     &lt;NA&gt;                                charac…
+##  4 default data      depth     Depth in sediment core (cm)         integer
+##  5 default data      value     &lt;NA&gt;                                double 
+##  6 default data      sd        Standard deviation uncertainty of … double 
+##  7 default locations dataset   &lt;NA&gt;                                charac…
+##  8 default locations location  &lt;NA&gt;                                charac…
+##  9 default locations latitude  &lt;NA&gt;                                double 
+## 10 default locations longitude &lt;NA&gt;                                double 
+## 11 default locations lake      &lt;NA&gt;                                charac…
+## 12 default params    dataset   &lt;NA&gt;                                charac…
+## 13 default params    param     &lt;NA&gt;                                charac…
+## 14 default params    method    &lt;NA&gt;                                charac…
+## 15 default datasets  dataset   &lt;NA&gt;                                charac…
+## 16 default datasets  source    &lt;NA&gt;                                charac…</code></pre>
 <p>You’ll notice there’s a <code>type</code> column that is also automatically generated, which I suggest that you don’t mess with (it will get overwritten by default before you write the object to disk). If something is the wrong type, you should use the <code>mudate_*()</code> family of functions to fix the column type, then run <code>update_columns_table()</code> again. From the top, the documentation looks like this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">md_doc &lt;-<span class="st"> </span>md %&gt;%
-<span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;MAJ-1&quot;</span>, <span class="dt">latitude =</span> -<span class="fl">63.486</span>, <span class="dt">longitude =</span> <span class="fl">44.732</span>,
-                   <span class="dt">lake =</span> <span class="st">&quot;Lake Major&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;POC-2&quot;</span>, <span class="dt">latitude =</span> -<span class="fl">63.839</span>, <span class="dt">longitude =</span> <span class="fl">44.794</span>,
-                   <span class="dt">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">update_datasets</span>(<span class="dt">source =</span> <span class="st">&quot;R package mudata2, version 1.0.0&quot;</span>) %&gt;%
-<span class="st">  </span><span class="kw">update_columns_table</span>() %&gt;%
-<span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;depth&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Depth in sediment core (cm)&quot;</span>) %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">md_doc &lt;-<span class="st"> </span>md <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;MAJ-1&quot;</span>, <span class="dt">latitude =</span> <span class="op">-</span><span class="fl">63.486</span>, <span class="dt">longitude =</span> <span class="fl">44.732</span>,
+                   <span class="dt">lake =</span> <span class="st">&quot;Lake Major&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_locations</span>(<span class="st">&quot;POC-2&quot;</span>, <span class="dt">latitude =</span> <span class="op">-</span><span class="fl">63.839</span>, <span class="dt">longitude =</span> <span class="fl">44.794</span>,
+                   <span class="dt">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_datasets</span>(<span class="dt">source =</span> <span class="st">&quot;R package mudata2, version 1.0.0&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_columns_table</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;depth&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Depth in sediment core (cm)&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;sd&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Standard deviation uncertainty of n=3 values&quot;</span>)</code></pre></div>
 </div>
 <div id="writing-mudata-objects" class="section level2">

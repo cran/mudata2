@@ -172,7 +172,7 @@ long_plot <- function(.data, id_vars = NULL, measure_var = "value", x = NULL, y 
                            function(col_name) {
                              .data %>%
                                dplyr::ungroup() %>%
-                               dplyr::select(rlang::UQ(col_name)) %>%
+                               dplyr::select(!!col_name) %>%
                                dplyr::distinct() %>%
                                dplyr::collect() %>%
                                dplyr::mutate(count = 1:n()) %>%
@@ -415,9 +415,8 @@ long_plot_base <- function(.data, id_vars = NULL, measure_var = "value", x = NUL
   ))
 }
 
+
 create_facet_df <- function(.data, facets, max_facets) {
-  # CMD plot hack
-  n <- NULL; rm(n)
   
   # get all distinct combos of facet vars
   facet_df <- .data %>%
@@ -550,6 +549,6 @@ plot.mudata <- function(x, facets = "param", col = "location", pch = "dataset", 
 # such as min(), max(), and mean(). Is essentially the opposite of ggplot2's
 # is.discrete(), which may be an alternative.
 is.numericish <- function(x) {
-  return(any(class(x) %in% c("numeric", "integer", "Date", "POSIXct", "POSIXt")))
+  return(any(class(x) %in% c("numeric", "integer", "Date", "POSIXct", "POSIXt", "difftime")))
 }
 

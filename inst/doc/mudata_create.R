@@ -2,10 +2,17 @@
 library(mudata2)
 ns_climate %>% tbl_data()
 
-## ---- message = FALSE----------------------------------------------------
-library(tidyverse)
+## ---- include=FALSE------------------------------------------------------
+# this is to avoid depending on tidyverse
+library(tidyr)
+library(dplyr)
 data("pocmaj")
 data("pocmajsum")
+
+## ---- eval = FALSE-------------------------------------------------------
+#  library(tidyverse)
+#  data("pocmaj")
+#  data("pocmajsum")
 
 ## ------------------------------------------------------------------------
 pocmajwide <- pocmajsum %>%

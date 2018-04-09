@@ -42,12 +42,12 @@ test_that("parallel gather works wih tidyeval", {
   pm2 <- pocmajsum %>% dplyr::select(core, depth, Ca, Ti, V, dplyr::ends_with("sd"))
   values <- c("Ca", "Ti", "V")
   sds <- c("Ca_sd", "Ti_sd", "V_sd")
-  expect_identical(parallel_gather(pm2, key = "param", value = rlang::UQ(values), sd = rlang::UQ(sds)),
+  expect_identical(parallel_gather(pm2, key = "param", value = !!values, sd = !!sds),
                    parallel_gather(pm2, key = "param", 
                                    value = c(Ca, Ti, V), sd = c(Ca_sd, Ti_sd, V_sd)))
 })
 
-test_that("paralell gather throws errors", {
+test_that("parallel gather throws errors", {
   
   # check no input
   expect_error(parallel_gather(pocmajsum, key = "param"),
@@ -61,5 +61,16 @@ test_that("paralell gather throws errors", {
                     value = c(Ca, Ti),
                     sd = c(Ca_sd, Ti_sd, V_sd)),
     "All named arguments must refer to the same number of columns"
+  )
+  
+  expect_error(
+    parallel_gather_base(pocmajsum, key = "param",
+                         list()),
+    "Must pass at least one value = columns in parallel_gather()"
+  )
+  expect_error(
+    parallel_gather_base(pocmajsum, key = "param",
+                         list(c("Ca", "Ti", "V"))),
+    "All arguments to parallel_gather\\(\\) must be named"
   )
 })
