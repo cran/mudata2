@@ -1,4 +1,4 @@
-28736623dea2529f20a6881b9e83a27e *DESCRIPTION
+a9b278c07fc2fa910810ee169409eebc *DESCRIPTION
 7dcf0593d106b70722a16d98f5695f29 *NAMESPACE
 1a1d0c8a0ede0772e32e93086bd61cca *R/autoplot.R
 cd224f6654b32e38bdb7674f7eebf219 *R/biplot.R
@@ -14,13 +14,13 @@ add8e4fd5a2f60f8b806c093075003e2 *R/types.R
 3fb47abad2b50e51cb1957afb154782e *R/utils.R
 1536cb23907b908641acc2717a27158c *README.md
 2bb3bb13e64323d07c7578cad1a53908 *build/vignette.rds
-655c326b502f51a951609c09b5077f66 *data/alta_lake.rda
-2b8ae4cccdcd7c0bde592a592071ea83 *data/kentvillegreenwood.rda
-2be39f82296cc823b20ec6e066b545d2 *data/long_lake.rda
-719f150311fcb412f2b83d6861d20e53 *data/ns_climate.rda
-3c9abe42b2f61f2a3a46bcecf2768ef9 *data/pocmaj.rda
-593521718e12151d09c64481b0a4a933 *data/pocmajsum.rda
-b1f59bfb5cec9cbaabc47cf8b9f1061c *data/second_lake_temp.rda
+63f64a30bbdb965e5635a959b6c87577 *data/alta_lake.rda
+3af5b7c1a19afc803e71a8d5d2c23375 *data/kentvillegreenwood.rda
+033bbe6be13346c822cdef61ff936e67 *data/long_lake.rda
+9761e5a9fa088ee7db8f47b87f8df355 *data/ns_climate.rda
+e58c931aeef587d3cabe42795eeadb24 *data/pocmaj.rda
+cda7ca8d2fc7475de58b0b228979d7e0 *data/pocmajsum.rda
+bb8d9226a2542355b7cd6d0c7722380b *data/second_lake_temp.rda
 2f192e4ca9024bd2ff63f3f71931f286 *inst/doc/mudata.R
 9c5612ac077080986daea758a2dd4d6e *inst/doc/mudata.Rmd
 fe7971ca973e9fd633cb99ea6ea6b635 *inst/doc/mudata.html
