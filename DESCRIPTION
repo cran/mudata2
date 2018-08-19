@@ -1,9 +1,8 @@
 Package: mudata2
 Title: Interchange Tools for Multi-Parameter Spatiotemporal Data
-Version: 1.0.2.1
+Version: 1.0.3
 Authors@R: person("Dewey", "Dunnington", role = c("aut", "cre"),
 				email = "dewey@fishandwhistle.net")
-Maintainer: ORPHANED
 Description: Formatting and structuring multi-parameter spatiotemporal data
   is often a time-consuming task. This package offers functions and data structures 
   designed to easily organize and visualize these data for applications in geology, 
@@ -21,10 +20,8 @@ LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-08-19 08:39:12 UTC; hornik
+Packaged: 2018-08-20 07:17:22 UTC; hornik
 Author: Dewey Dunnington [aut, cre]
+Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Repository: CRAN
-Date/Publication: 2018-08-19 08:51:38 UTC
-X-CRAN-Original-Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
-X-CRAN-Comment: Orphaned and corrected on 2018-08-19 as check problems
-        were not corrected despite reminders.
+Date/Publication: 2018-08-20 09:21:25

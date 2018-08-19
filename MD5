@@ -1,4 +1,4 @@
-a9b278c07fc2fa910810ee169409eebc *DESCRIPTION
+ac8c5db0aa4f097fe09c443a905e0045 *DESCRIPTION
 7dcf0593d106b70722a16d98f5695f29 *NAMESPACE
 1a1d0c8a0ede0772e32e93086bd61cca *R/autoplot.R
 cd224f6654b32e38bdb7674f7eebf219 *R/biplot.R
@@ -23,10 +23,10 @@ cda7ca8d2fc7475de58b0b228979d7e0 *data/pocmajsum.rda
 bb8d9226a2542355b7cd6d0c7722380b *data/second_lake_temp.rda
 2f192e4ca9024bd2ff63f3f71931f286 *inst/doc/mudata.R
 9c5612ac077080986daea758a2dd4d6e *inst/doc/mudata.Rmd
-fe7971ca973e9fd633cb99ea6ea6b635 *inst/doc/mudata.html
+df76d9da1c1d21eac36e50e8abf10b5a *inst/doc/mudata.html
 65477586450cea5639aa8bd94c694bda *inst/doc/mudata_create.R
 ade334d3efec3555881c60155916aaa0 *inst/doc/mudata_create.Rmd
-c9606d71ce9fdeb5ec74facc4417f03f *inst/doc/mudata_create.html
+13b2cdd281b7e25ab89b1ec3869d6c4c *inst/doc/mudata_create.html
 918ce054730a55d284d1fd9334ece436 *man/alta_lake.Rd
 2b8158619f0c33a15ff4bc5cf4b87ac0 *man/as_col_spec.Rd
 d330096d9f9d17762ed99b565dffddda *man/as_mudata.Rd
