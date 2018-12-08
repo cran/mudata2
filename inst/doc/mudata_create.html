@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dewey Dunnington" />
 
-<meta name="date" content="2018-08-19" />
+<meta name="date" content="2018-12-08" />
 
 <title>Creating mudata objects</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Creating mudata objects</h1>
 <h4 class="author"><em>Dewey Dunnington</em></h4>
-<h4 class="date"><em>2018-08-19</em></h4>
+<h4 class="date"><em>2018-12-08</em></h4>
 
 
 
@@ -79,19 +79,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mudata2)
 ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tbl_data</span>()</code></pre></div>
 <pre><code>## # A tibble: 115,541 x 7
-##    dataset           location     param   date       value flag  flag_text
-##    &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;   &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-##  1 ecclimate_monthly SABLE ISLAN… mean_m… 1897-01-01  NA   M     Missing  
-##  2 ecclimate_monthly SABLE ISLAN… mean_m… 1897-02-01  NA   M     Missing  
-##  3 ecclimate_monthly SABLE ISLAN… mean_m… 1897-03-01  NA   M     Missing  
-##  4 ecclimate_monthly SABLE ISLAN… mean_m… 1897-04-01  NA   M     Missing  
-##  5 ecclimate_monthly SABLE ISLAN… mean_m… 1897-05-01  NA   M     Missing  
-##  6 ecclimate_monthly SABLE ISLAN… mean_m… 1897-06-01  NA   M     Missing  
-##  7 ecclimate_monthly SABLE ISLAN… mean_m… 1897-07-01  NA   M     Missing  
-##  8 ecclimate_monthly SABLE ISLAN… mean_m… 1897-08-01  NA   M     Missing  
-##  9 ecclimate_monthly SABLE ISLAN… mean_m… 1897-09-01  NA   M     Missing  
-## 10 ecclimate_monthly SABLE ISLAN… mean_m… 1897-10-01  12.2 &lt;NA&gt;  &lt;NA&gt;     
-## # ... with 115,531 more rows</code></pre>
+##    dataset        location      param      date       value flag  flag_text
+##    &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+##  1 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-01-01  NA   M     Missing  
+##  2 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-02-01  NA   M     Missing  
+##  3 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-03-01  NA   M     Missing  
+##  4 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-04-01  NA   M     Missing  
+##  5 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-05-01  NA   M     Missing  
+##  6 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-06-01  NA   M     Missing  
+##  7 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-07-01  NA   M     Missing  
+##  8 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-08-01  NA   M     Missing  
+##  9 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-09-01  NA   M     Missing  
+## 10 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-10-01  12.2 &lt;NA&gt;  &lt;NA&gt;     
+## # … with 115,531 more rows</code></pre>
 <p>At minimum the data table must contain the columns <code>param</code> and <code>value</code>. The <code>param</code> column contains the identifier of the measured parameter (a character vector), and the <code>value</code> column contains the value of the measurement (there is no restriction on what type this is except that it has to be the same type for all parameters; see below for ways around this). To represent measurements at more than one location, you can include a location column with location identifiers (a character vector). To represent measurements at more than one point in time, you can include a column between <code>param</code> and <code>value</code> specifying at what time the measurement was taken. To the right of the <code>value</code> column, you can include any columns needed to add context to <code>value</code> (I typically use this for uncertainty, detection limits, and comments on a particular measurement).</p>
 <p>In the context of <code>ns_climate</code>, the <code>location</code> column contains station names like “SABLE ISLAND”, the <code>param</code> column contains measurement names like “mean_max_temp”, and the point in time the measurement was taken is included in the <code>date</code> column. To the right of the <code>value</code> column, there are two columns that add extra “flag” information provided by Environment Canada. These data are distributed with Environment Canada climate downloads, but are often discarded because the 12 paired columns in the standard wide data format in which they are distributed are a bit unwieldy.</p>
 <p>In general, the steps to create a mudata object are:</p>
@@ -282,12 +282,12 @@ ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="k
 ## # A tibble: 6 x 5
 ##   dataset location param depth value
 ##   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;dbl&gt;
-## 1 default MAJ-1    Ca        0  1885
-## 2 default MAJ-1    Ca        1  1418
-## 3 default MAJ-1    Ca        2  1550
-## 4 default MAJ-1    Ca        3  1448
-## 5 default MAJ-1    Ca        4  1247
-## 6 default MAJ-1    Ca        5  1412</code></pre>
+## 1 default MAJ-1    Ca        0 1885.
+## 2 default MAJ-1    Ca        1 1418 
+## 3 default MAJ-1    Ca        2 1550 
+## 4 default MAJ-1    Ca        3 1448 
+## 5 default MAJ-1    Ca        4 1247 
+## 6 default MAJ-1    Ca        5 1412.</code></pre>
 </div>
 <div id="case-2-wide-summarised-data-with-uncertainty" class="section level3">
 <h3>Case 2: Wide, summarised data with uncertainty</h3>
@@ -505,12 +505,12 @@ ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="k
 ## # A tibble: 6 x 6
 ##   dataset location param depth value    sd
 ##   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 default MAJ-1    Ca        0  1885   452
-## 2 default MAJ-1    Ca        1  1418    NA
-## 3 default MAJ-1    Ca        2  1550    NA
-## 4 default MAJ-1    Ca        3  1448    NA
-## 5 default MAJ-1    Ca        4  1247    NA
-## 6 default MAJ-1    Ca        5  1412   126</code></pre>
+## 1 default MAJ-1    Ca        0 1885.  452.
+## 2 default MAJ-1    Ca        1 1418    NA 
+## 3 default MAJ-1    Ca        2 1550    NA 
+## 4 default MAJ-1    Ca        3 1448    NA 
+## 5 default MAJ-1    Ca        4 1247    NA 
+## 6 default MAJ-1    Ca        5 1412.  126.</code></pre>
 </div>
 </div>
 <div id="adding-metadata" class="section level2">
@@ -615,24 +615,24 @@ md_doc <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tbl_columns</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(dataset, table, column, description, type)</code></pre></div>
 <pre><code>## # A tibble: 16 x 5
-##    dataset table     column    description                         type   
-##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                               &lt;chr&gt;  
-##  1 default data      dataset   &lt;NA&gt;                                charac…
-##  2 default data      location  &lt;NA&gt;                                charac…
-##  3 default data      param     &lt;NA&gt;                                charac…
-##  4 default data      depth     Depth in sediment core (cm)         integer
-##  5 default data      value     &lt;NA&gt;                                double 
-##  6 default data      sd        Standard deviation uncertainty of … double 
-##  7 default locations dataset   &lt;NA&gt;                                charac…
-##  8 default locations location  &lt;NA&gt;                                charac…
-##  9 default locations latitude  &lt;NA&gt;                                double 
-## 10 default locations longitude &lt;NA&gt;                                double 
-## 11 default locations lake      &lt;NA&gt;                                charac…
-## 12 default params    dataset   &lt;NA&gt;                                charac…
-## 13 default params    param     &lt;NA&gt;                                charac…
-## 14 default params    method    &lt;NA&gt;                                charac…
-## 15 default datasets  dataset   &lt;NA&gt;                                charac…
-## 16 default datasets  source    &lt;NA&gt;                                charac…</code></pre>
+##    dataset table     column   description                          type    
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;                                &lt;chr&gt;   
+##  1 default data      dataset  &lt;NA&gt;                                 charact…
+##  2 default data      location &lt;NA&gt;                                 charact…
+##  3 default data      param    &lt;NA&gt;                                 charact…
+##  4 default data      depth    Depth in sediment core (cm)          integer 
+##  5 default data      value    &lt;NA&gt;                                 double  
+##  6 default data      sd       Standard deviation uncertainty of n… double  
+##  7 default locations dataset  &lt;NA&gt;                                 charact…
+##  8 default locations location &lt;NA&gt;                                 charact…
+##  9 default locations latitude &lt;NA&gt;                                 double  
+## 10 default locations longitu… &lt;NA&gt;                                 double  
+## 11 default locations lake     &lt;NA&gt;                                 charact…
+## 12 default params    dataset  &lt;NA&gt;                                 charact…
+## 13 default params    param    &lt;NA&gt;                                 charact…
+## 14 default params    method   &lt;NA&gt;                                 charact…
+## 15 default datasets  dataset  &lt;NA&gt;                                 charact…
+## 16 default datasets  source   &lt;NA&gt;                                 charact…</code></pre>
 <p>You’ll notice there’s a <code>type</code> column that is also automatically generated, which I suggest that you don’t mess with (it will get overwritten by default before you write the object to disk). If something is the wrong type, you should use the <code>mudate_*()</code> family of functions to fix the column type, then run <code>update_columns_table()</code> again. From the top, the documentation looks like this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">md_doc &lt;-<span class="st"> </span>md <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="op">%&gt;%</span>

@@ -78,22 +78,17 @@ read_mudata <- function(filename, ...) {
 write_mudata_zip <- function(md, filename, overwrite = FALSE, validate = TRUE,
                              update_columns = TRUE, ...) {
   # check if output file exists, stop if overwrite = FALSE
-  if(file.exists(filename) && !overwrite) stop("File ", filename, 
-                                               " exists. Use ovewrite = TRUE to overwrite.")
+  if(file.exists(filename) && !overwrite) stop("File ", filename, " exists. Use ovewrite = TRUE to overwrite.")
   
   # create a temporary directory, use write_mudata_dir to write to it
   dir_file <- tempfile()[1]
   on.exit(unlink(dir_file, recursive = TRUE))
-  write_mudata_dir(md, dir_file, overwrite = TRUE, validate = validate,
-                   update_columns = update_columns, ...)
+  write_mudata_dir(md, dir_file, overwrite = TRUE, validate = validate, update_columns = update_columns, ...)
   
   # the zip function is tricky in that it requires a working directory change
-  old_wd <- getwd()
-  on.exit(setwd(old_wd), add = TRUE)
-  
-  # use utils::zip to create a zip file
-  setwd(dir_file)
-  utils::zip(filename, list.files(), flags = "-q")
+  filename <- fs::path_abs(filename)
+  status <- withr::with_dir(dir_file, utils::zip(filename, list.files(), flags = "-q"))
+  if(status != 0) stop(sprintf("Writing zip file '%s' exited with status %s", filename, status))
   
   # return md, invisibly
   invisible(md)
@@ -200,8 +195,7 @@ read_mudata_dir <- function(filename, validate = TRUE, ...) {
   csv_files <- list.files(mudir, pattern = "\\.csv$", full.names = TRUE)
   table_names <- gsub("\\.csv$", "", basename(csv_files))
   obj <- lapply(stats::setNames(csv_files, table_names), function(csv_name) {
-    readr::read_csv(csv_name, col_names = TRUE, 
-                    col_types = readr::cols(.default = readr::col_character()), ...)
+    readr::read_csv(csv_name, col_names = TRUE, col_types = readr::cols(.default = readr::col_character()), ...)
   })
                 
   
@@ -212,9 +206,9 @@ read_mudata_dir <- function(filename, validate = TRUE, ...) {
   # retreive x_columns
   x_columns <- NULL
   if(!is.null(meta) && ("x_columns" %in% colnames(meta))) {
-    x_cols_json <- try(jsonlite::fromJSON(meta$x_columns))
-    if(is.character(x_cols_json)) {
-      x_columns <- x_cols_json
+    x_cols_json <- try(jsonlite::fromJSON(meta$x_columns, simplifyVector = FALSE))
+    if(is.vector(x_cols_json)) {
+      x_columns <- as.character(x_cols_json)
     }
   }
   
@@ -559,7 +553,7 @@ mudata_parse_column <- function(x, type_str = NA_character_, ...) {
   if(inherits(x, parse_output_class(type_str))) {
     x
   } else {
-    as_parser(type_str)(x, ...)
+    as_parser(type_str)(as.character(x), ...)
   }
 }
 

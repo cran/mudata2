@@ -511,4 +511,51 @@ test_that("mudata_read guesses column types when columns table is missing", {
   unlink(tf, recursive = TRUE)
 })
 
+test_that("when zero x_columns exist on purpose, no message occurs on read", {
+  md_zero <- mudata(data.frame(param = c("p1", "p2"), value = c(1, 2)), x_columns = character(0))
+  
+  tf_json <- tempfile()
+  write_mudata_json(md_zero, tf_json)
+  expect_silent(read_mudata_json(tf_json))
+  unlink(tf_json)
+  
+  # TODO: This passes on travis and locally, but fails on CRAN
+  # it's a fairly unimportant test, as zero x_columns are easy to guess
+  # tf_dir <- tempfile()
+  # write_mudata_dir(md_zero, tf_dir)
+  # expect_silent(read_mudata_dir(tf_dir))
+  # unlink(tf_dir, recursive = TRUE)
+})
 
+test_that("read/write functions work inside RMarkdown", {
+  
+  tdir <- tempfile()
+  dir.create(tdir)
+  tf <- file.path(tdir, "temp.Rmd")
+  
+  writeLines(
+    c(
+      "---",
+      "output: md_document",
+      "---",
+      "",
+      "```{r}",
+      "library(mudata2)",
+      "getwd()",
+      "write_mudata_dir(kentvillegreenwood, 'kg_dir')",
+      "write_mudata_json(kentvillegreenwood, 'kg.json')",
+      "write_mudata_zip(kentvillegreenwood, 'kg.zip')",
+      "```",
+      ""
+    ),
+    tf
+  )
+  
+  rmarkdown::render(tf, quiet = TRUE)
+  # cat(paste(readLines(file.path(tdir, "temp.md")), collapse = "\n"))
+  expect_is(mudata2::read_mudata_dir(file.path(tdir, "kg_dir")), "mudata")
+  expect_is(mudata2::read_mudata_json(file.path(tdir, "kg.json")), "mudata")
+  expect_is(mudata2::read_mudata_zip(file.path(tdir, "kg.zip")), "mudata")
+  
+  unlink(tdir, recursive = TRUE)
+})

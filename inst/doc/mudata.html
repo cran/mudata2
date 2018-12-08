@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dewey Dunnington" />
 
-<meta name="date" content="2018-08-19" />
+<meta name="date" content="2018-12-08" />
 
 <title>Using mudata objects</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using mudata objects</h1>
 <h4 class="author"><em>Dewey Dunnington</em></h4>
-<h4 class="date"><em>2018-08-19</em></h4>
+<h4 class="date"><em>2018-12-08</em></h4>
 
 
 
@@ -95,14 +95,14 @@ ns_climate</code></pre></div>
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 7
-##   dataset           location     param    date       value flag  flag_text
-##   &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;    &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-## 1 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-01-01    NA M     Missing  
-## 2 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-02-01    NA M     Missing  
-## 3 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-03-01    NA M     Missing  
-## 4 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-04-01    NA M     Missing  
-## 5 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-05-01    NA M     Missing  
-## 6 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-06-01    NA M     Missing</code></pre>
+##   dataset        location       param      date       value flag  flag_text
+##   &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+## 1 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-01-01    NA M     Missing  
+## 2 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-02-01    NA M     Missing  
+## 3 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-03-01    NA M     Missing  
+## 4 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-04-01    NA M     Missing  
+## 5 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-05-01    NA M     Missing  
+## 6 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-06-01    NA M     Missing</code></pre>
 <div id="reading-an-object" class="section level2">
 <h2>Reading an object</h2>
 <p>The <code>ns_climate</code> object is already an object in R, but if it wasn’t, you would need to use <code>read_mudata()</code> to read it in. If you’re curious what a mudata object looks like on disk, you could try using <code>write_mudata()</code> to find out. I tend to prefer writing to a directory rather than a JSON or ZIP file, but you can take your pick.</p>
@@ -132,31 +132,31 @@ ns_climate</code></pre></div>
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 7
-##   dataset           location     param    date       value flag  flag_text
-##   &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;    &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-## 1 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-01-01    NA M     Missing  
-## 2 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-02-01    NA M     Missing  
-## 3 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-03-01    NA M     Missing  
-## 4 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-04-01    NA M     Missing  
-## 5 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-05-01    NA M     Missing  
-## 6 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-06-01    NA M     Missing</code></pre>
+##   dataset        location       param      date       value flag  flag_text
+##   &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+## 1 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-01-01    NA M     Missing  
+## 2 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-02-01    NA M     Missing  
+## 3 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-03-01    NA M     Missing  
+## 4 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-04-01    NA M     Missing  
+## 5 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-05-01    NA M     Missing  
+## 6 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-06-01    NA M     Missing</code></pre>
 <p>The <code>summary()</code> function provides some numeric summaries by dataset, location, and parameter if the <code>value</code> column of the <code>data</code> table is numeric (if it isn’t, it provides counts instead).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(ns_climate)</code></pre></div>
 <pre><code>## Warning: package 'bindrcpp' was built under R version 3.4.4</code></pre>
 <pre><code>## # A tibble: 137 x 7
-##    param           location     dataset    mean_value sd_value     n  n_NA
-##    &lt;chr&gt;           &lt;chr&gt;        &lt;chr&gt;           &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;int&gt;
-##  1 dir_of_max_gust SABLE ISLAN… ecclimate…       19.8    10.2    299     0
-##  2 extr_max_temp   ANNAPOLIS R… ecclimate…       19.9     7.24   995    28
-##  3 extr_max_temp   BADDECK 6297 ecclimate…       18.9     8.58   901    43
-##  4 extr_max_temp   BEAVERBANK … ecclimate…       17.2    10.4     24    17
-##  5 extr_max_temp   COLLEGEVILL… ecclimate…       20.3     8.54  1061    34
-##  6 extr_max_temp   DIGBY 6338   ecclimate…       19.0     6.92   624    20
-##  7 extr_max_temp   KENTVILLE C… ecclimate…       21.0     8.27  1002     3
-##  8 extr_max_temp   MAHONE BAY … ecclimate…       20.8     8.35   108    11
-##  9 extr_max_temp   MOUNT UNIAC… ecclimate…       19.7     8.21   972    30
-## 10 extr_max_temp   NAPPAN CDA … ecclimate…       19.3     8.04  1121    19
-## # ... with 127 more rows</code></pre>
+##    param       location        dataset      mean_value sd_value     n  n_NA
+##    &lt;chr&gt;       &lt;chr&gt;           &lt;chr&gt;             &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;int&gt;
+##  1 dir_of_max… SABLE ISLAND 6… ecclimate_m…       19.8    10.2    299     0
+##  2 extr_max_t… ANNAPOLIS ROYA… ecclimate_m…       19.9     7.24   995    28
+##  3 extr_max_t… BADDECK 6297    ecclimate_m…       18.9     8.58   901    43
+##  4 extr_max_t… BEAVERBANK 6301 ecclimate_m…       17.2    10.4     24    17
+##  5 extr_max_t… COLLEGEVILLE 6… ecclimate_m…       20.3     8.54  1061    34
+##  6 extr_max_t… DIGBY 6338      ecclimate_m…       19.0     6.92   624    20
+##  7 extr_max_t… KENTVILLE CDA … ecclimate_m…       21.0     8.27  1002     3
+##  8 extr_max_t… MAHONE BAY 6396 ecclimate_m…       20.8     8.35   108    11
+##  9 extr_max_t… MOUNT UNIACKE … ecclimate_m…       19.7     8.21   972    30
+## 10 extr_max_t… NAPPAN CDA 6414 ecclimate_m…       19.3     8.04  1121    19
+## # … with 127 more rows</code></pre>
 <p>Finally, the <code>autoplot()</code> function provides an attempt at the best way to plot the object. The smaller the subset, the more useful the plot, but it produces reasonable results for large objects as well. This function produces <strong>ggplot2</strong> objects, which can be modified as such (e.g., <code>+ scale_y_reverse()</code>, etc.).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(ns_climate)</code></pre></div>
 <pre><code>## Using x = &quot;date&quot;, y = &quot;value&quot;</code></pre>
@@ -169,40 +169,40 @@ ns_climate</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># extract the parameters table</span>
 ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tbl_params</span>()</code></pre></div>
 <pre><code>## # A tibble: 11 x 4
-##    dataset           param              label                      unit   
-##    &lt;chr&gt;             &lt;chr&gt;              &lt;chr&gt;                      &lt;chr&gt;  
-##  1 ecclimate_monthly mean_max_temp      Mean Max Temp (C)          C      
-##  2 ecclimate_monthly mean_min_temp      Mean Min Temp (C)          C      
-##  3 ecclimate_monthly mean_temp          Mean Temp (C)              C      
-##  4 ecclimate_monthly extr_max_temp      Extr Max Temp (C)          C      
-##  5 ecclimate_monthly extr_min_temp      Extr Min Temp (C)          C      
-##  6 ecclimate_monthly total_rain         Total Rain (mm)            mm     
-##  7 ecclimate_monthly total_snow         Total Snow (cm)            cm     
-##  8 ecclimate_monthly total_precip       Total Precip (mm)          mm     
-##  9 ecclimate_monthly snow_grnd_last_day Snow Grnd Last Day (cm)    cm     
-## 10 ecclimate_monthly dir_of_max_gust    Dir of Max Gust (10's deg) 10's d…
+##    dataset           param              label                      unit    
+##    &lt;chr&gt;             &lt;chr&gt;              &lt;chr&gt;                      &lt;chr&gt;   
+##  1 ecclimate_monthly mean_max_temp      Mean Max Temp (C)          C       
+##  2 ecclimate_monthly mean_min_temp      Mean Min Temp (C)          C       
+##  3 ecclimate_monthly mean_temp          Mean Temp (C)              C       
+##  4 ecclimate_monthly extr_max_temp      Extr Max Temp (C)          C       
+##  5 ecclimate_monthly extr_min_temp      Extr Min Temp (C)          C       
+##  6 ecclimate_monthly total_rain         Total Rain (mm)            mm      
+##  7 ecclimate_monthly total_snow         Total Snow (cm)            cm      
+##  8 ecclimate_monthly total_precip       Total Precip (mm)          mm      
+##  9 ecclimate_monthly snow_grnd_last_day Snow Grnd Last Day (cm)    cm      
+## 10 ecclimate_monthly dir_of_max_gust    Dir of Max Gust (10's deg) 10's deg
 ## 11 ecclimate_monthly spd_of_max_gust    Spd of Max Gust (km/h)     km/h</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># exract the locations table</span>
 ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tbl_locations</span>()</code></pre></div>
 <pre><code>## # A tibble: 15 x 19
-##    dataset   location   name   province climate_id station_id wmo_id tc_id
-##    &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;           &lt;int&gt;  &lt;int&gt; &lt;chr&gt;
-##  1 ecclimat… ANNAPOLIS… ANNAP… NOVA SC… 8200100          6289     NA &quot;&quot;   
-##  2 ecclimat… BADDECK 6… BADDE… NOVA SC… 8200300          6297     NA &quot;&quot;   
-##  3 ecclimat… BEAVERBAN… BEAVE… NOVA SC… 8200550          6301     NA &quot;&quot;   
-##  4 ecclimat… COLLEGEVI… COLLE… NOVA SC… 8201000          6329     NA &quot;&quot;   
-##  5 ecclimat… DIGBY 6338 DIGBY  NOVA SC… 8201600          6338     NA &quot;&quot;   
-##  6 ecclimat… KENTVILLE… KENTV… NOVA SC… 8202800          6375     NA &quot;&quot;   
-##  7 ecclimat… MAHONE BA… MAHON… NOVA SC… 8203300          6396     NA &quot;&quot;   
-##  8 ecclimat… MOUNT UNI… MOUNT… NOVA SC… 8203600          6413     NA &quot;&quot;   
-##  9 ecclimat… NAPPAN CD… NAPPA… NOVA SC… 8203700          6414     NA &quot;&quot;   
-## 10 ecclimat… PARRSBORO… PARRS… NOVA SC… 8204400          6428     NA &quot;&quot;   
-## 11 ecclimat… PORT HAST… PORT … NOVA SC… 8204480          6441     NA &quot;&quot;   
-## 12 ecclimat… SABLE ISL… SABLE… NOVA SC… 8204700          6454  71600 ESA  
-## 13 ecclimat… ST MARGAR… ST MA… NOVA SC… 8204800          6456     NA &quot;&quot;   
-## 14 ecclimat… SPRINGFIE… SPRIN… NOVA SC… 8205200          6473     NA &quot;&quot;   
-## 15 ecclimat… UPPER STE… UPPER… NOVA SC… 8206200          6495     NA &quot;&quot;   
-## # ... with 11 more variables: latitude &lt;dbl&gt;, longitude &lt;dbl&gt;,
+##    dataset location name  province climate_id station_id wmo_id tc_id
+##    &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;           &lt;int&gt;  &lt;int&gt; &lt;chr&gt;
+##  1 ecclim… ANNAPOL… ANNA… NOVA SC… 8200100          6289     NA &quot;&quot;   
+##  2 ecclim… BADDECK… BADD… NOVA SC… 8200300          6297     NA &quot;&quot;   
+##  3 ecclim… BEAVERB… BEAV… NOVA SC… 8200550          6301     NA &quot;&quot;   
+##  4 ecclim… COLLEGE… COLL… NOVA SC… 8201000          6329     NA &quot;&quot;   
+##  5 ecclim… DIGBY 6… DIGBY NOVA SC… 8201600          6338     NA &quot;&quot;   
+##  6 ecclim… KENTVIL… KENT… NOVA SC… 8202800          6375     NA &quot;&quot;   
+##  7 ecclim… MAHONE … MAHO… NOVA SC… 8203300          6396     NA &quot;&quot;   
+##  8 ecclim… MOUNT U… MOUN… NOVA SC… 8203600          6413     NA &quot;&quot;   
+##  9 ecclim… NAPPAN … NAPP… NOVA SC… 8203700          6414     NA &quot;&quot;   
+## 10 ecclim… PARRSBO… PARR… NOVA SC… 8204400          6428     NA &quot;&quot;   
+## 11 ecclim… PORT HA… PORT… NOVA SC… 8204480          6441     NA &quot;&quot;   
+## 12 ecclim… SABLE I… SABL… NOVA SC… 8204700          6454  71600 ESA  
+## 13 ecclim… ST MARG… ST M… NOVA SC… 8204800          6456     NA &quot;&quot;   
+## 14 ecclim… SPRINGF… SPRI… NOVA SC… 8205200          6473     NA &quot;&quot;   
+## 15 ecclim… UPPER S… UPPE… NOVA SC… 8206200          6495     NA &quot;&quot;   
+## # … with 11 more variables: latitude &lt;dbl&gt;, longitude &lt;dbl&gt;,
 ## #   elevation &lt;dbl&gt;, first_year &lt;int&gt;, last_year &lt;int&gt;,
 ## #   hly_first_year &lt;int&gt;, hly_last_year &lt;int&gt;, dly_first_year &lt;int&gt;,
 ## #   dly_last_year &lt;int&gt;, mly_first_year &lt;int&gt;, mly_last_year &lt;int&gt;</code></pre>
@@ -226,14 +226,14 @@ ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="k
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 7
-##   dataset           location      param   date       value flag  flag_text
-##   &lt;chr&gt;             &lt;chr&gt;         &lt;chr&gt;   &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-## 1 ecclimate_monthly SABLE ISLAND… mean_t… 1897-01-01    NA M     Missing  
-## 2 ecclimate_monthly SABLE ISLAND… mean_t… 1897-02-01    NA M     Missing  
-## 3 ecclimate_monthly SABLE ISLAND… mean_t… 1897-03-01    NA M     Missing  
-## 4 ecclimate_monthly SABLE ISLAND… mean_t… 1897-04-01    NA M     Missing  
-## 5 ecclimate_monthly SABLE ISLAND… mean_t… 1897-05-01    NA M     Missing  
-## 6 ecclimate_monthly SABLE ISLAND… mean_t… 1897-06-01    NA M     Missing</code></pre>
+##   dataset         location        param    date       value flag  flag_text
+##   &lt;chr&gt;           &lt;chr&gt;           &lt;chr&gt;    &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+## 1 ecclimate_mont… SABLE ISLAND 6… mean_te… 1897-01-01    NA M     Missing  
+## 2 ecclimate_mont… SABLE ISLAND 6… mean_te… 1897-02-01    NA M     Missing  
+## 3 ecclimate_mont… SABLE ISLAND 6… mean_te… 1897-03-01    NA M     Missing  
+## 4 ecclimate_mont… SABLE ISLAND 6… mean_te… 1897-04-01    NA M     Missing  
+## 5 ecclimate_mont… SABLE ISLAND 6… mean_te… 1897-05-01    NA M     Missing  
+## 6 ecclimate_mont… SABLE ISLAND 6… mean_te… 1897-06-01    NA M     Missing</code></pre>
 <p>You can also use the <strong>dplyr</strong> select helpers to select related params/locations…</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select_params</span>(<span class="kw">contains</span>(<span class="st">&quot;temp&quot;</span>))</code></pre></div>
 <pre><code>## A mudata object aligned along &quot;date&quot;
@@ -244,14 +244,14 @@ ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="k
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 7
-##   dataset           location     param    date       value flag  flag_text
-##   &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;    &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-## 1 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-01-01    NA M     Missing  
-## 2 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-02-01    NA M     Missing  
-## 3 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-03-01    NA M     Missing  
-## 4 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-04-01    NA M     Missing  
-## 5 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-05-01    NA M     Missing  
-## 6 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-06-01    NA M     Missing</code></pre>
+##   dataset        location       param      date       value flag  flag_text
+##   &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+## 1 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-01-01    NA M     Missing  
+## 2 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-02-01    NA M     Missing  
+## 3 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-03-01    NA M     Missing  
+## 4 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-04-01    NA M     Missing  
+## 5 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-05-01    NA M     Missing  
+## 6 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-06-01    NA M     Missing</code></pre>
 <p>…and rename params/locations on the fly.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select_locations</span>(<span class="dt">Kentville =</span> <span class="kw">starts_with</span>(<span class="st">&quot;KENT&quot;</span>))</code></pre></div>
 <pre><code>## A mudata object aligned along &quot;date&quot;
@@ -262,14 +262,14 @@ ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="k
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 7
-##   dataset           location  param       date       value flag  flag_text
-##   &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;       &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-## 1 ecclimate_monthly Kentville mean_max_t… 1913-01-01 NA    M     Missing  
-## 2 ecclimate_monthly Kentville mean_max_t… 1913-02-01 NA    M     Missing  
-## 3 ecclimate_monthly Kentville mean_max_t… 1913-03-01 NA    M     Missing  
-## 4 ecclimate_monthly Kentville mean_max_t… 1913-04-01  9.70 &lt;NA&gt;  &lt;NA&gt;     
-## 5 ecclimate_monthly Kentville mean_max_t… 1913-05-01 12.5  &lt;NA&gt;  &lt;NA&gt;     
-## 6 ecclimate_monthly Kentville mean_max_t… 1913-06-01 19.9  &lt;NA&gt;  &lt;NA&gt;</code></pre>
+##   dataset           location  param        date       value flag  flag_text
+##   &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;        &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+## 1 ecclimate_monthly Kentville mean_max_te… 1913-01-01  NA   M     Missing  
+## 2 ecclimate_monthly Kentville mean_max_te… 1913-02-01  NA   M     Missing  
+## 3 ecclimate_monthly Kentville mean_max_te… 1913-03-01  NA   M     Missing  
+## 4 ecclimate_monthly Kentville mean_max_te… 1913-04-01   9.7 &lt;NA&gt;  &lt;NA&gt;     
+## 5 ecclimate_monthly Kentville mean_max_te… 1913-05-01  12.5 &lt;NA&gt;  &lt;NA&gt;     
+## 6 ecclimate_monthly Kentville mean_max_te… 1913-06-01  19.9 &lt;NA&gt;  &lt;NA&gt;</code></pre>
 <p>To select params/locations based on the <code>tbl_params()</code> and <code>tbl_locations()</code> tables, you can use the <code>filter_*()</code> functions (note that <code>last_year</code> is a column in <code>tbl_locations()</code>, and <code>unit</code> is a column in <code>tbl_params()</code>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only use locations whose last data point was after 2000</span>
 ns_climate <span class="op">%&gt;%</span>
@@ -282,14 +282,14 @@ ns_climate <span class="op">%&gt;%</span>
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 7
-##   dataset           location     param    date       value flag  flag_text
-##   &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;    &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-## 1 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-01-01    NA M     Missing  
-## 2 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-02-01    NA M     Missing  
-## 3 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-03-01    NA M     Missing  
-## 4 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-04-01    NA M     Missing  
-## 5 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-05-01    NA M     Missing  
-## 6 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-06-01    NA M     Missing</code></pre>
+##   dataset        location       param      date       value flag  flag_text
+##   &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+## 1 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-01-01    NA M     Missing  
+## 2 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-02-01    NA M     Missing  
+## 3 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-03-01    NA M     Missing  
+## 4 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-04-01    NA M     Missing  
+## 5 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-05-01    NA M     Missing  
+## 6 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-06-01    NA M     Missing</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># use only params measured in mm</span>
 ns_climate <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">filter_params</span>(unit <span class="op">==</span><span class="st"> &quot;mm&quot;</span>)</code></pre></div>
@@ -301,14 +301,14 @@ ns_climate <span class="op">%&gt;%</span>
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 7
-##   dataset           location      param   date       value flag  flag_text
-##   &lt;chr&gt;             &lt;chr&gt;         &lt;chr&gt;   &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-## 1 ecclimate_monthly SABLE ISLAND… total_… 1891-01-01  NA   M     Missing  
-## 2 ecclimate_monthly SABLE ISLAND… total_… 1891-02-01  40.4 &lt;NA&gt;  &lt;NA&gt;     
-## 3 ecclimate_monthly SABLE ISLAND… total_… 1891-03-01  32.0 &lt;NA&gt;  &lt;NA&gt;     
-## 4 ecclimate_monthly SABLE ISLAND… total_… 1891-04-01 132   &lt;NA&gt;  &lt;NA&gt;     
-## 5 ecclimate_monthly SABLE ISLAND… total_… 1891-05-01  44.7 &lt;NA&gt;  &lt;NA&gt;     
-## 6 ecclimate_monthly SABLE ISLAND… total_… 1891-06-01 106   &lt;NA&gt;  &lt;NA&gt;</code></pre>
+##   dataset         location        param    date       value flag  flag_text
+##   &lt;chr&gt;           &lt;chr&gt;           &lt;chr&gt;    &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+## 1 ecclimate_mont… SABLE ISLAND 6… total_r… 1891-01-01  NA   M     Missing  
+## 2 ecclimate_mont… SABLE ISLAND 6… total_r… 1891-02-01  40.4 &lt;NA&gt;  &lt;NA&gt;     
+## 3 ecclimate_mont… SABLE ISLAND 6… total_r… 1891-03-01  32   &lt;NA&gt;  &lt;NA&gt;     
+## 4 ecclimate_mont… SABLE ISLAND 6… total_r… 1891-04-01 132.  &lt;NA&gt;  &lt;NA&gt;     
+## 5 ecclimate_mont… SABLE ISLAND 6… total_r… 1891-05-01  44.7 &lt;NA&gt;  &lt;NA&gt;     
+## 6 ecclimate_mont… SABLE ISLAND 6… total_r… 1891-06-01 106.  &lt;NA&gt;  &lt;NA&gt;</code></pre>
 <p>Similarly, we can subset parameters, locations, and the data table all at once using <code>filter_data()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)</code></pre></div>
 <pre><code>## Warning: package 'lubridate' was built under R version 3.4.4</code></pre>
@@ -328,49 +328,49 @@ ns_climate <span class="op">%&gt;%</span>
 ## 
 ## tbl_data() %&gt;% head():
 ## # A tibble: 6 x 7
-##   dataset           location     param    date       value flag  flag_text
-##   &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;    &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-## 1 ecclimate_monthly SABLE ISLAN… mean_ma… 1897-06-01  NA   M     Missing  
-## 2 ecclimate_monthly SABLE ISLAN… mean_ma… 1898-06-01  13.4 &lt;NA&gt;  &lt;NA&gt;     
-## 3 ecclimate_monthly SABLE ISLAN… mean_ma… 1899-06-01  14.4 &lt;NA&gt;  &lt;NA&gt;     
-## 4 ecclimate_monthly SABLE ISLAN… mean_ma… 1900-06-01  14.6 &lt;NA&gt;  &lt;NA&gt;     
-## 5 ecclimate_monthly SABLE ISLAN… mean_ma… 1901-06-01  15.3 &lt;NA&gt;  &lt;NA&gt;     
-## 6 ecclimate_monthly SABLE ISLAN… mean_ma… 1902-06-01  13.6 &lt;NA&gt;  &lt;NA&gt;</code></pre>
+##   dataset        location       param      date       value flag  flag_text
+##   &lt;chr&gt;          &lt;chr&gt;          &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+## 1 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-06-01  NA   M     Missing  
+## 2 ecclimate_mon… SABLE ISLAND … mean_max_… 1898-06-01  13.4 &lt;NA&gt;  &lt;NA&gt;     
+## 3 ecclimate_mon… SABLE ISLAND … mean_max_… 1899-06-01  14.4 &lt;NA&gt;  &lt;NA&gt;     
+## 4 ecclimate_mon… SABLE ISLAND … mean_max_… 1900-06-01  14.6 &lt;NA&gt;  &lt;NA&gt;     
+## 5 ecclimate_mon… SABLE ISLAND … mean_max_… 1901-06-01  15.3 &lt;NA&gt;  &lt;NA&gt;     
+## 6 ecclimate_mon… SABLE ISLAND … mean_max_… 1902-06-01  13.6 &lt;NA&gt;  &lt;NA&gt;</code></pre>
 </div>
 <div id="extracting-data" class="section level2">
 <h2>Extracting data</h2>
 <p>The data is stored in the data table (i.e., <code>tbl_data()</code>) in parameter-long form (that is, one row per measurement rather than one row per observation). This has advantages in that information about each measurement can be stored next to the value (e.g., standard deviation, notes, etc.), however it is rarely the form required for analysis. To extract data in parameter-long form, you can use <code>tbl_data()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tbl_data</span>()</code></pre></div>
 <pre><code>## # A tibble: 115,541 x 7
-##    dataset           location     param   date       value flag  flag_text
-##    &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;   &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-##  1 ecclimate_monthly SABLE ISLAN… mean_m… 1897-01-01  NA   M     Missing  
-##  2 ecclimate_monthly SABLE ISLAN… mean_m… 1897-02-01  NA   M     Missing  
-##  3 ecclimate_monthly SABLE ISLAN… mean_m… 1897-03-01  NA   M     Missing  
-##  4 ecclimate_monthly SABLE ISLAN… mean_m… 1897-04-01  NA   M     Missing  
-##  5 ecclimate_monthly SABLE ISLAN… mean_m… 1897-05-01  NA   M     Missing  
-##  6 ecclimate_monthly SABLE ISLAN… mean_m… 1897-06-01  NA   M     Missing  
-##  7 ecclimate_monthly SABLE ISLAN… mean_m… 1897-07-01  NA   M     Missing  
-##  8 ecclimate_monthly SABLE ISLAN… mean_m… 1897-08-01  NA   M     Missing  
-##  9 ecclimate_monthly SABLE ISLAN… mean_m… 1897-09-01  NA   M     Missing  
-## 10 ecclimate_monthly SABLE ISLAN… mean_m… 1897-10-01  12.2 &lt;NA&gt;  &lt;NA&gt;     
-## # ... with 115,531 more rows</code></pre>
+##    dataset        location      param      date       value flag  flag_text
+##    &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+##  1 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-01-01  NA   M     Missing  
+##  2 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-02-01  NA   M     Missing  
+##  3 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-03-01  NA   M     Missing  
+##  4 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-04-01  NA   M     Missing  
+##  5 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-05-01  NA   M     Missing  
+##  6 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-06-01  NA   M     Missing  
+##  7 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-07-01  NA   M     Missing  
+##  8 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-08-01  NA   M     Missing  
+##  9 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-09-01  NA   M     Missing  
+## 10 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-10-01  12.2 &lt;NA&gt;  &lt;NA&gt;     
+## # … with 115,531 more rows</code></pre>
 <p>To extract data in a more standard parameter-wide form, you can use <code>tbl_data_wide()</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tbl_data_wide</span>()</code></pre></div>
 <pre><code>## # A tibble: 14,311 x 14
 ##    dataset location date       dir_of_max_gust extr_max_temp extr_min_temp
 ##    &lt;chr&gt;   &lt;chr&gt;    &lt;date&gt;               &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
-##  1 ecclim… ANNAPOL… 1914-01-01              NA          NA           NA   
-##  2 ecclim… ANNAPOL… 1914-02-01              NA          NA           NA   
-##  3 ecclim… ANNAPOL… 1914-03-01              NA          NA           NA   
-##  4 ecclim… ANNAPOL… 1914-04-01              NA          19.4        -11.1 
-##  5 ecclim… ANNAPOL… 1914-05-01              NA          30.0        - 3.90
-##  6 ecclim… ANNAPOL… 1914-06-01              NA          26.7        - 1.70
-##  7 ecclim… ANNAPOL… 1914-07-01              NA          30.0          3.90
-##  8 ecclim… ANNAPOL… 1914-08-01              NA          NA           NA   
-##  9 ecclim… ANNAPOL… 1914-09-01              NA          NA           NA   
-## 10 ecclim… ANNAPOL… 1914-10-01              NA          NA           NA   
-## # ... with 14,301 more rows, and 8 more variables: mean_max_temp &lt;dbl&gt;,
+##  1 ecclim… ANNAPOL… 1914-01-01              NA          NA            NA  
+##  2 ecclim… ANNAPOL… 1914-02-01              NA          NA            NA  
+##  3 ecclim… ANNAPOL… 1914-03-01              NA          NA            NA  
+##  4 ecclim… ANNAPOL… 1914-04-01              NA          19.4         -11.1
+##  5 ecclim… ANNAPOL… 1914-05-01              NA          30            -3.9
+##  6 ecclim… ANNAPOL… 1914-06-01              NA          26.7          -1.7
+##  7 ecclim… ANNAPOL… 1914-07-01              NA          30             3.9
+##  8 ecclim… ANNAPOL… 1914-08-01              NA          NA            NA  
+##  9 ecclim… ANNAPOL… 1914-09-01              NA          NA            NA  
+## 10 ecclim… ANNAPOL… 1914-10-01              NA          NA            NA  
+## # … with 14,301 more rows, and 8 more variables: mean_max_temp &lt;dbl&gt;,
 ## #   mean_min_temp &lt;dbl&gt;, mean_temp &lt;dbl&gt;, snow_grnd_last_day &lt;dbl&gt;,
 ## #   spd_of_max_gust &lt;dbl&gt;, total_precip &lt;dbl&gt;, total_rain &lt;dbl&gt;,
 ## #   total_snow &lt;dbl&gt;</code></pre>
@@ -380,21 +380,21 @@ ns_climate <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">filter_data</span>(<span class="kw">year</span>(date) <span class="op">==</span><span class="st"> </span><span class="dv">1960</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">tbl_data_wide</span>(<span class="dt">key =</span> location)</code></pre></div>
 <pre><code>## # A tibble: 12 x 16
-##    dataset   param date       `BADDECK 6297` `COLLEGEVILLE 6… `DIGBY 6338`
-##    &lt;chr&gt;     &lt;chr&gt; &lt;date&gt;              &lt;dbl&gt;            &lt;dbl&gt;        &lt;dbl&gt;
-##  1 ecclimat… mean… 1960-01-01        - 3.80            - 6.00      - 2.60 
-##  2 ecclimat… mean… 1960-02-01        - 1.20            - 2.50        0.300
-##  3 ecclimat… mean… 1960-03-01        - 1.30            - 3.10        0    
-##  4 ecclimat… mean… 1960-04-01          3.00              2.10        6.50 
-##  5 ecclimat… mean… 1960-05-01         11.7              10.9        12.8  
-##  6 ecclimat… mean… 1960-06-01         14.4              14.7        16.4  
-##  7 ecclimat… mean… 1960-07-01         17.1              18.0        18.9  
-##  8 ecclimat… mean… 1960-08-01         NA                18.5        18.6  
-##  9 ecclimat… mean… 1960-09-01         15.2              14.0        14.8  
-## 10 ecclimat… mean… 1960-10-01          8.70              6.90        9.10 
-## 11 ecclimat… mean… 1960-11-01          4.60              3.20        6.70 
-## 12 ecclimat… mean… 1960-12-01        - 0.800           - 3.50      - 0.400
-## # ... with 10 more variables: `KENTVILLE CDA 6375` &lt;dbl&gt;, `MAHONE BAY
+##    dataset param date       `BADDECK 6297` `COLLEGEVILLE 6… `DIGBY 6338`
+##    &lt;chr&gt;   &lt;chr&gt; &lt;date&gt;              &lt;dbl&gt;            &lt;dbl&gt;        &lt;dbl&gt;
+##  1 ecclim… mean… 1960-01-01           -3.8             -6           -2.6
+##  2 ecclim… mean… 1960-02-01           -1.2             -2.5          0.3
+##  3 ecclim… mean… 1960-03-01           -1.3             -3.1          0  
+##  4 ecclim… mean… 1960-04-01            3                2.1          6.5
+##  5 ecclim… mean… 1960-05-01           11.7             10.9         12.8
+##  6 ecclim… mean… 1960-06-01           14.4             14.7         16.4
+##  7 ecclim… mean… 1960-07-01           17.1             18           18.9
+##  8 ecclim… mean… 1960-08-01           NA               18.5         18.6
+##  9 ecclim… mean… 1960-09-01           15.2             14           14.8
+## 10 ecclim… mean… 1960-10-01            8.7              6.9          9.1
+## 11 ecclim… mean… 1960-11-01            4.6              3.2          6.7
+## 12 ecclim… mean… 1960-12-01           -0.8             -3.5         -0.4
+## # … with 10 more variables: `KENTVILLE CDA 6375` &lt;dbl&gt;, `MAHONE BAY
 ## #   6396` &lt;dbl&gt;, `MOUNT UNIACKE 6413` &lt;dbl&gt;, `NAPPAN CDA 6414` &lt;dbl&gt;,
 ## #   `PARRSBORO 6428` &lt;dbl&gt;, `PORT HASTINGS 6441` &lt;dbl&gt;, `SABLE ISLAND
 ## #   6454` &lt;dbl&gt;, `SPRINGFIELD 6473` &lt;dbl&gt;, `ST MARGARET'S BAY 6456` &lt;dbl&gt;,
@@ -417,19 +417,19 @@ ns_climate <span class="op">%&gt;%</span>
 
 temp_<span class="dv">1960</span></code></pre></div>
 <pre><code>## # A tibble: 36 x 8
-##    dataset   location date       extr_max_temp extr_min_temp mean_max_temp
-##    &lt;chr&gt;     &lt;chr&gt;    &lt;date&gt;             &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
-##  1 ecclimat… Badeck   1960-01-01          8.90       -16.7         - 0.600
-##  2 ecclimat… Badeck   1960-02-01          6.10       -13.3           1.70 
-##  3 ecclimat… Badeck   1960-03-01          7.20       - 9.40          0.900
-##  4 ecclimat… Badeck   1960-04-01         16.7        - 7.80          6.10 
-##  5 ecclimat… Badeck   1960-05-01         26.7          2.20         17.2  
-##  6 ecclimat… Badeck   1960-06-01         30.6          0            19.6  
-##  7 ecclimat… Badeck   1960-07-01         28.3          8.90         22.6  
-##  8 ecclimat… Badeck   1960-08-01         33.3          8.90         24.3  
-##  9 ecclimat… Badeck   1960-09-01         25.6          4.40         19.8  
-## 10 ecclimat… Badeck   1960-10-01         18.3        - 0.600        12.3  
-## # ... with 26 more rows, and 2 more variables: mean_min_temp &lt;dbl&gt;,
+##    dataset location date       extr_max_temp extr_min_temp mean_max_temp
+##    &lt;chr&gt;   &lt;chr&gt;    &lt;date&gt;             &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+##  1 ecclim… Badeck   1960-01-01           8.9         -16.7          -0.6
+##  2 ecclim… Badeck   1960-02-01           6.1         -13.3           1.7
+##  3 ecclim… Badeck   1960-03-01           7.2          -9.4           0.9
+##  4 ecclim… Badeck   1960-04-01          16.7          -7.8           6.1
+##  5 ecclim… Badeck   1960-05-01          26.7           2.2          17.2
+##  6 ecclim… Badeck   1960-06-01          30.6           0            19.6
+##  7 ecclim… Badeck   1960-07-01          28.3           8.9          22.6
+##  8 ecclim… Badeck   1960-08-01          33.3           8.9          24.3
+##  9 ecclim… Badeck   1960-09-01          25.6           4.4          19.8
+## 10 ecclim… Badeck   1960-10-01          18.3          -0.6          12.3
+## # … with 26 more rows, and 2 more variables: mean_min_temp &lt;dbl&gt;,
 ## #   mean_temp &lt;dbl&gt;</code></pre>
 <p>We can then use this data with <strong>ggplot2</strong> to lead us to the conclusion that three locations in the same province had more or less the same monthly temperature characteristics in 1960.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
