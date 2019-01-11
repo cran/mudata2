@@ -1,4 +1,4 @@
-3d62bf5903ea41faa9ebf983f212d523 *DESCRIPTION
+0cb469622f96221478564029c0947fee *DESCRIPTION
 7dcf0593d106b70722a16d98f5695f29 *NAMESPACE
 1a1d0c8a0ede0772e32e93086bd61cca *R/autoplot.R
 6706fbd1490017c9b20ef5f92d988079 *R/biplot.R
@@ -23,10 +23,10 @@ ba03a657841a277854f0e072da590f2a *R/mudata_remote.R
 b1f59bfb5cec9cbaabc47cf8b9f1061c *data/second_lake_temp.rda
 2f192e4ca9024bd2ff63f3f71931f286 *inst/doc/mudata.R
 9c5612ac077080986daea758a2dd4d6e *inst/doc/mudata.Rmd
-394db16ac691e58ab458cf99bca133c9 *inst/doc/mudata.html
+78876ce846301e8c3a2662378bf24a45 *inst/doc/mudata.html
 65477586450cea5639aa8bd94c694bda *inst/doc/mudata_create.R
 ade334d3efec3555881c60155916aaa0 *inst/doc/mudata_create.Rmd
-149c5c70263abe7bfd16d9bf852a8630 *inst/doc/mudata_create.html
+9921b3346ea6a505a44444a70fa00efb *inst/doc/mudata_create.html
 918ce054730a55d284d1fd9334ece436 *man/alta_lake.Rd
 2b8158619f0c33a15ff4bc5cf4b87ac0 *man/as_col_spec.Rd
 d330096d9f9d17762ed99b565dffddda *man/as_mudata.Rd
@@ -66,9 +66,9 @@ ddec7ad749a1167352d9021a1d17dde3 *man/update_columns_table.Rd
 7c9e67350dbe262e4aa76a9d54993c6b *man/update_datasets.Rd
 322ba950ea8eab45303e14da7ec1d88b *man/write_mudata.Rd
 135d61be146d5b3a920c2423b9dcc483 *tests/test-all.R
-9255f9726e2b3509b422fb97a441d0c2 *tests/testthat/Rplots.pdf
+90c8893bcd1ed44fa13b6630a4325156 *tests/testthat/Rplots.pdf
 62539ef771248013914ead8657d7ac1f *tests/testthat/test_autoplot.R
-75e5244a429cfd019ca3ce491e79300c *tests/testthat/test_biplot.R
+0bc50e00511cccaadecf04f3c37a97c5 *tests/testthat/test_biplot.R
 0a32313df7f5373e64626a84780b29df *tests/testthat/test_mudata.R
 06518fe77750bec0d03da293251f3618 *tests/testthat/test_mudata.io.R
 c9e8ba2838c12d9e0fc05834ae362616 *tests/testthat/test_mudata_helpers.R

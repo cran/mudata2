@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dewey Dunnington" />
 
-<meta name="date" content="2018-12-08" />
+<meta name="date" content="2019-01-11" />
 
 <title>Using mudata objects</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using mudata objects</h1>
 <h4 class="author"><em>Dewey Dunnington</em></h4>
-<h4 class="date"><em>2018-12-08</em></h4>
+<h4 class="date"><em>2019-01-11</em></h4>
 
 
 
@@ -142,7 +142,6 @@ ns_climate</code></pre></div>
 ## 6 ecclimate_mon… SABLE ISLAND … mean_max_… 1897-06-01    NA M     Missing</code></pre>
 <p>The <code>summary()</code> function provides some numeric summaries by dataset, location, and parameter if the <code>value</code> column of the <code>data</code> table is numeric (if it isn’t, it provides counts instead).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(ns_climate)</code></pre></div>
-<pre><code>## Warning: package 'bindrcpp' was built under R version 3.4.4</code></pre>
 <pre><code>## # A tibble: 137 x 7
 ##    param       location        dataset      mean_value sd_value     n  n_NA
 ##    &lt;chr&gt;       &lt;chr&gt;           &lt;chr&gt;             &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;int&gt;

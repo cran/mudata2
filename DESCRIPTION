@@ -1,8 +1,11 @@
 Package: mudata2
 Title: Interchange Tools for Multi-Parameter Spatiotemporal Data
-Version: 1.0.4
-Authors@R: person("Dewey", "Dunnington", role = c("aut", "cre"),
-				email = "dewey@fishandwhistle.net")
+Version: 1.0.5
+Authors@R: person("Dewey", "Dunnington",
+    email = "dewey@fishandwhistle.net", 
+    role = c("aut", "cre"), 
+    comment = c(ORCID = "0000-0002-9415-4582")
+  )
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Description: Formatting and structuring multi-parameter spatiotemporal data
   is often a time-consuming task. This package offers functions and data structures 
@@ -21,7 +24,7 @@ LazyData: true
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-12-08 21:14:12 UTC; dewey
-Author: Dewey Dunnington [aut, cre]
+Packaged: 2019-01-11 23:08:13 UTC; dewey
+Author: Dewey Dunnington [aut, cre] (<https://orcid.org/0000-0002-9415-4582>)
 Repository: CRAN
-Date/Publication: 2018-12-08 22:20:10 UTC
+Date/Publication: 2019-01-11 23:40:03 UTC
