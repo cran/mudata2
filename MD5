@@ -1,7 +1,7 @@
-0cb469622f96221478564029c0947fee *DESCRIPTION
+de50f5f53dc86c85c8b536a9c544a023 *DESCRIPTION
 7dcf0593d106b70722a16d98f5695f29 *NAMESPACE
 1a1d0c8a0ede0772e32e93086bd61cca *R/autoplot.R
-6706fbd1490017c9b20ef5f92d988079 *R/biplot.R
+d9fcd1268e4e741cf86a3e841ce77919 *R/biplot.R
 21283b1679b90b432d58ad576580d541 *R/data.R
 062ab96b22c71c298a3a36b921552a2c *R/mudata.R
 16240dfa007b66170bd4294e386a808f *R/mudata.io.R
@@ -12,8 +12,8 @@ ba03a657841a277854f0e072da590f2a *R/mudata_remote.R
 0884d7cd0d09f474aebf4c7fb166424e *R/rename.R
 60d11ad6ab7ab6c3c07108f5f0186931 *R/types.R
 3fb47abad2b50e51cb1957afb154782e *R/utils.R
-1536cb23907b908641acc2717a27158c *README.md
-2bb3bb13e64323d07c7578cad1a53908 *build/vignette.rds
+f98617165b7c8e595942b4795adacbf0 *README.md
+d544f13efb713842a8736c652e6e6f31 *build/vignette.rds
 655c326b502f51a951609c09b5077f66 *data/alta_lake.rda
 2b8ae4cccdcd7c0bde592a592071ea83 *data/kentvillegreenwood.rda
 2be39f82296cc823b20ec6e066b545d2 *data/long_lake.rda
@@ -23,10 +23,10 @@ ba03a657841a277854f0e072da590f2a *R/mudata_remote.R
 b1f59bfb5cec9cbaabc47cf8b9f1061c *data/second_lake_temp.rda
 2f192e4ca9024bd2ff63f3f71931f286 *inst/doc/mudata.R
 9c5612ac077080986daea758a2dd4d6e *inst/doc/mudata.Rmd
-78876ce846301e8c3a2662378bf24a45 *inst/doc/mudata.html
+65c1bb6d618126f7c040e863d1d13fdd *inst/doc/mudata.html
 65477586450cea5639aa8bd94c694bda *inst/doc/mudata_create.R
 ade334d3efec3555881c60155916aaa0 *inst/doc/mudata_create.Rmd
-9921b3346ea6a505a44444a70fa00efb *inst/doc/mudata_create.html
+2b1cb8cd29832e97ff4baf559194392a *inst/doc/mudata_create.html
 918ce054730a55d284d1fd9334ece436 *man/alta_lake.Rd
 2b8158619f0c33a15ff4bc5cf4b87ac0 *man/as_col_spec.Rd
 d330096d9f9d17762ed99b565dffddda *man/as_mudata.Rd
@@ -66,7 +66,7 @@ ddec7ad749a1167352d9021a1d17dde3 *man/update_columns_table.Rd
 7c9e67350dbe262e4aa76a9d54993c6b *man/update_datasets.Rd
 322ba950ea8eab45303e14da7ec1d88b *man/write_mudata.Rd
 135d61be146d5b3a920c2423b9dcc483 *tests/test-all.R
-90c8893bcd1ed44fa13b6630a4325156 *tests/testthat/Rplots.pdf
+60a1fbcf2cd0b6ac156a665cb63dfddc *tests/testthat/Rplots.pdf
 62539ef771248013914ead8657d7ac1f *tests/testthat/test_autoplot.R
 0bc50e00511cccaadecf04f3c37a97c5 *tests/testthat/test_biplot.R
 0a32313df7f5373e64626a84780b29df *tests/testthat/test_mudata.R
