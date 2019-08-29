@@ -1,8 +1,8 @@
 
 #' Generate type descriptors
 #'
-#' These functions generate type descriptors for use in the \link{mudata}
-#' columns table. They are used in \link{mudata_parse_column} to deserialize
+#' These functions generate type descriptors for use in the [mudata]
+#' columns table. They are used in [mudata_parse_column] to deserialize
 #' a vector read from csv or json.
 #'
 #' @param x An object
@@ -15,35 +15,38 @@ generate_type_tbl <- function(x, default = "guess") UseMethod("generate_type_tbl
 
 #' @rdname generate_type_tbl
 generate_type_tbl.mudata <- function(x, default = "guess") {
-  # generate a table of all columns from all tables
+  # empty columns table
+  empty <- tibble::tibble(dataset = character(0), table = character(0),
+                          column = character(0))
+
   if(.isempty(x$data)) {
-    # no data, empty auto-generated columns table
-    columns <- tibble::tibble(dataset = character(0), table = character(0),
-                              column = character(0))
+    return(empty)
+  }
+  
+  # generate a table of all columns from all tables
+  # use all datasets, or if there is no datasets table use NA_character_
+  if("datasets" %in% names(x)) {
+    dataset_ids <- distinct_datasets(x, table = "datasets")
   } else {
-    # use all datasets, or if there is no datasets table use NA_character_
-    if("datasets" %in% names(x)) {
-      dataset_ids <- distinct_datasets(x, table = "datasets")
-    } else {
-      dataset_ids <- NA_character_
-    }
-    
-    # generate all combinations of dataset_ids and table
-    # use generate_type_str() to generate column specs
-    allcols <- expand.grid(dataset = dataset_ids, table = names(x),
-                            stringsAsFactors = FALSE)
-    allcols$.data <- lapply(allcols$table, function(table) {
-      generate_type_tbl(x[[table]], default = default)
-    })
-    
-    # unnest the .data column
-    if(nrow(allcols) == 0) {
-      # no datasets/tbls, empty auto-generated columns table
-      columns <- tibble::tibble(dataset = character(0), table = character(0),
-                                column = character(0))
-    } else {
-      columns <- tidyr::unnest(allcols)
-    }
+    dataset_ids <- NA_character_
+  }
+  
+  # generate all combinations of dataset_ids and table
+  # use generate_type_str() to generate column specs
+  allcols <- expand.grid(dataset = dataset_ids, table = names(x),
+                         stringsAsFactors = FALSE)
+  allcols$.specs <- lapply(allcols$table, function(table) {
+    generate_type_tbl(x[[table]], default = default)
+  })
+  
+  # unnest the .data column
+  if(nrow(allcols) == 0) {
+    # no datasets/tbls, empty auto-generated columns table
+    columns <- empty
+  } else {
+    # CMD hack
+    .specs <- NULL; rm(.specs)
+    columns <- allcols %>% tidyr::unnest(.specs)
   }
   
   # return columns
@@ -104,8 +107,8 @@ generate_type_str <- function(x, default = "guess") {
 
 #' Describe column types for use in the columns table
 #' 
-#' Type descriptions are basically calls to \code{readr::col_*} or 
-#' \code{readr::parse_*}, and can 
+#' Type descriptions are basically calls to `readr::col_*` or 
+#' `readr::parse_*`, and can 
 #' contain arguments for the sake of completeness (but this shouldn't normally be necessary).
 #'
 #' @param type_str A type string, one of date, datetime, logical, double, character, guess,
