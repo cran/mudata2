@@ -25,9 +25,6 @@ print(ns_climate)
 ## ------------------------------------------------------------------------
 summary(ns_climate)
 
-## ----autoplot, warning = FALSE, fig.width=7, fig.height=5----------------
-autoplot(ns_climate)
-
 ## ------------------------------------------------------------------------
 # extract the parameters table
 ns_climate %>% tbl_params()
@@ -80,9 +77,11 @@ temp_1960 <- ns_climate %>%
   # pick parameters
   select_params(contains("temp")) %>%
   # pick locations
-  select_locations(`Sable Island` = starts_with("SABLE"),
-                   `Kentville` = starts_with("KENT"),
-                   `Badeck` = starts_with("BADD")) %>%
+  select_locations(
+    `Sable Island` = starts_with("SABLE"),
+    `Kentville` = starts_with("KENT"),
+    `Badeck` = starts_with("BADD")
+  ) %>%
   # filter data table
   filter_data(year(date) == 1960) %>%
   # extract data in wide format
@@ -92,11 +91,17 @@ temp_1960
 
 ## ---- warning = FALSE, fig.width = 7, fig.height = 5---------------------
 library(ggplot2)
-ggplot(temp_1960, 
-       aes(x = date, y = mean_temp, 
-           ymin = extr_min_temp, 
-           ymax = extr_max_temp,
-           col = location, fill = location)) +
+ggplot(
+  temp_1960, 
+  aes(
+    x = date, 
+    y = mean_temp, 
+    ymin = extr_min_temp, 
+    ymax = extr_max_temp,
+    col = location, 
+    fill = location
+  )
+) +
   geom_ribbon(alpha = 0.2, col = NA) +
   geom_line()
 

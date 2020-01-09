@@ -3,8 +3,6 @@ context("mudata read/write")
 
 # expect identical mudata function
 expect_equal_mudata <- function(md1, md2) {
-  md1 <- dplyr::collect(md1)
-  md2 <- dplyr::collect(md2)
   
   # expect names equal
   expect_true(setequal(names(md1), names(md2)))
@@ -90,7 +88,7 @@ test_that("possibly not valid JSON objects are generate correct warnings/errors"
   json$locations <- 6
   tf2 <- tempfile()
   jsonlite::write_json(json, tf2)
-  expect_error(read_mudata_json(tf2), "JSON objects of incorrect type: locations")
+  expect_error(read_mudata_json(tf2), "JSON objects of incorrect type: 'locations'")
   unlink(tf2)
   
   json <- jsonlite::read_json(tf)
@@ -100,6 +98,26 @@ test_that("possibly not valid JSON objects are generate correct warnings/errors"
   expect_error(read_mudata_json(tf2), "cannot read JSON to mudata without a columns table")
   
   unlink(tf)
+})
+
+test_that("type strs are guessed when inappropriate columns exist in columns tbl", {
+  kg2 <- kentvillegreenwood
+  kg2$columns$type <- NULL
+  
+  outfile <- tempfile()
+  write_mudata_dir(kg2, outfile, update_columns = FALSE)
+  kg3 <- read_mudata_dir(outfile)
+  expect_equal_mudata(kg2, kg3)
+  unlink(outfile, recursive = TRUE)
+  
+  kg2$columns <- NULL
+  write_mudata_dir(kg2, outfile, update_columns = FALSE, overwrite = TRUE, validate = FALSE)
+  kg3 <- read_mudata_dir(outfile)
+  kg3$locations$stationid <- as.integer(kg3$locations$stationid)
+  kg3$columns$type[kg3$columns$column == "stationid"] <- "integer"
+  expect_equal_mudata(kg3, kentvillegreenwood)
+  
+  unlink(outfile, recursive = TRUE)
 })
 
 test_that("recursive reading is apparent to the user", {
@@ -181,6 +199,11 @@ test_that("read/write JSON functions work", {
   test_json(pocmaj_md)
 })
 
+test_that("odd json objects throw the appropriate error", {
+  expect_error(from_mudata_json('"not a list"'), "not a list")
+  expect_error(from_mudata_json('{}'), "missing the data table")
+})
+
 test_that("autodetection of read function filename extension works", {
   outfile_json <- tempfile(fileext = ".json")
   write_mudata(kentvillegreenwood, outfile_json)
@@ -251,7 +274,7 @@ test_that("mudata_prepare_column and mudata_parse_column are opposites", {
     c6 = as.POSIXct(c5),
     c7 = structure(list(list(1), list(2), list(3)), class = c("json_column", "list")),
     c8 = sf::st_as_sfc(c("POINT(0 0)", "POINT(1 1)", "POINT(2 2)")),
-    c9 = hms::as.hms(1:3)
+    c9 = hms::as_hms(1:3)
   )
   
   # get type strings, expected output classes
@@ -295,7 +318,7 @@ test_that("mudata_prepare_tbl works as intended", {
     c6 = as.POSIXct(c5),
     c7 = list(list(1), list(2), list(3)),
     c8 = sf::st_as_sfc(c("POINT(0 0)", "POINT(1 1)", "POINT(2 2)")),
-    c9 = hms::as.hms(1:3)
+    c9 = hms::as_hms(1:3)
   )
   
   prepared <- mudata_prepare_tbl(test_df)
@@ -329,7 +352,7 @@ test_that("mudata_prepare_tbl and mudata_parse_tbl are opposites", {
     c6 = lubridate::force_tz(as.POSIXct(c5), "UTC"),
     c7 = list(list(1), list(2), list(3)),
     c8 = sf::st_as_sfc(c("POINT(0 0)", "POINT(1 1)", "POINT(2 2)")),
-    c9 = hms::as.hms(1:3)
+    c9 = hms::as_hms(1:3)
   )
   
   # create prepared versions
@@ -373,7 +396,7 @@ test_that("mudata_prepare_tbl and mudata_parse_tbl are opposites", {
       } else {
         tzequal <- identical(tz1, tz2)
       }
-      if(all_equal && !identical(val1, val2)) stop("date vectors not identical")
+      if(all_equal && !identical(val1, val2)) abort("date vectors not identical")
       all_equal && tzequal
     } else if(inherits(val1, "factor") || inherits(val2, "factor")) {
       identical(as.character(val1), as.character(val2))
@@ -446,9 +469,84 @@ test_that("write directory function doesn't overwrite without permission", {
   write_mudata_dir(kentvillegreenwood, outfile)
   
   expect_error(write_mudata_dir(kentvillegreenwood, outfile),
-               "Directory .*? exists. Use ovewrite = TRUE to overwrite.")
+               "Directory '.*?' exists. Use `overwrite = TRUE` to overwrite.")
   expect_silent(write_mudata_dir(kentvillegreenwood, outfile, overwrite = TRUE))
   unlink(outfile, recursive = TRUE)  
+})
+
+test_that("write json function doesn't overwrite without permission", {
+  outfile <- tempfile()[1]
+  write_mudata_json(kentvillegreenwood, outfile)
+  
+  expect_error(
+    write_mudata_json(kentvillegreenwood, outfile),
+    "File '.*?' exists. Use `overwrite = TRUE` to overwrite."
+  )
+  expect_silent(write_mudata_json(kentvillegreenwood, outfile, overwrite = TRUE))
+  unlink(outfile)  
+})
+
+test_that("write zip function doesn't overwrite without permission", {
+  outfile <- tempfile(fileext = ".zip")[1]
+  write_mudata_zip(kentvillegreenwood, outfile)
+  
+  expect_error(
+    write_mudata_zip(kentvillegreenwood, outfile),
+    "File '.*?' exists. Use `overwrite = TRUE` to overwrite."
+  )
+  expect_silent(write_mudata_zip(kentvillegreenwood, outfile, overwrite = TRUE))
+  unlink(outfile)  
+})
+
+test_that("read_ functions throw errors when used on odd files", {
+  expect_error(read_mudata_dir("not_anything"), "does not exist")
+  expect_error(read_mudata_zip("not_anything"), "does not exist")
+  expect_error(read_mudata_json("not_anything"), "does not exist")
+  
+  empty_file <- tempfile()
+  file.create(empty_file)
+  expect_error(read_mudata_dir(empty_file), "not a directory")
+  unlink(empty_file)
+  
+  empty_directory <- tempfile()
+  dir.create(empty_directory)
+  expect_error(read_mudata_zip(empty_directory), "is a directory")
+  expect_error(read_mudata_json(empty_directory), "is a directory")
+  
+  unlink(empty_directory, recursive = TRUE)
+})
+
+test_that("write functions throw errors when they have insufficient permissions", {
+  # these tests are useful for development but aren't needed for CRAN
+  skip_on_cran()
+  skip_on_os("windows")
+  empty_directory <- tempfile()
+  dir.create(empty_directory)
+  Sys.chmod(empty_directory, mode = "0444")
+  expect_error(
+    write_mudata_dir(kentvillegreenwood, file.path(empty_directory, "kg.mudata")), 
+    "Failed to create directory"
+  )
+  
+  expect_error(
+    suppressWarnings(write_mudata_dir(kentvillegreenwood, empty_directory, overwrite = TRUE)), 
+    "Error writing mudata to CSV"
+  )
+  
+  expect_error(
+    write_mudata_zip(kentvillegreenwood, file.path(empty_directory, "kg.mudata.zip")), 
+    "exited with status '15'"
+  )
+  
+  expect_warning(
+    expect_error(
+      write_mudata_json(kentvillegreenwood, file.path(empty_directory, "kg.mudata.json")), 
+      "cannot open the connection"
+    ),
+    "Permission denied"
+  )
+  
+  unlink(empty_directory)
 })
 
 test_that("read/write directory functions work", {
@@ -511,6 +609,15 @@ test_that("mudata_read guesses column types when columns table is missing", {
   unlink(tf, recursive = TRUE)
 })
 
+test_that("mudata_read errors when data.csv is missing", {
+  tf <- tempfile()
+  write_mudata_dir(ns_climate, tf)
+  unlink(file.path(tf, "data.csv"))
+  expect_error(read_mudata_dir(tf), "'data\\.csv' not found")
+  
+  unlink(tf, recursive = TRUE)
+})
+
 test_that("when zero x_columns exist on purpose, no message occurs on read", {
   md_zero <- mudata(data.frame(param = c("p1", "p2"), value = c(1, 2)), x_columns = character(0))
   
@@ -519,43 +626,11 @@ test_that("when zero x_columns exist on purpose, no message occurs on read", {
   expect_silent(read_mudata_json(tf_json))
   unlink(tf_json)
   
-  # TODO: This passes on travis and locally, but fails on CRAN
-  # it's a fairly unimportant test, as zero x_columns are easy to guess
-  # tf_dir <- tempfile()
-  # write_mudata_dir(md_zero, tf_dir)
-  # expect_silent(read_mudata_dir(tf_dir))
-  # unlink(tf_dir, recursive = TRUE)
-})
-
-test_that("read/write functions work inside RMarkdown", {
-  
-  tdir <- tempfile()
-  dir.create(tdir)
-  tf <- file.path(tdir, "temp.Rmd")
-  
-  writeLines(
-    c(
-      "---",
-      "output: md_document",
-      "---",
-      "",
-      "```{r}",
-      "library(mudata2)",
-      "getwd()",
-      "write_mudata_dir(kentvillegreenwood, 'kg_dir')",
-      "write_mudata_json(kentvillegreenwood, 'kg.json')",
-      "write_mudata_zip(kentvillegreenwood, 'kg.zip')",
-      "```",
-      ""
-    ),
-    tf
-  )
-  
-  rmarkdown::render(tf, quiet = TRUE)
-  # cat(paste(readLines(file.path(tdir, "temp.md")), collapse = "\n"))
-  expect_is(mudata2::read_mudata_dir(file.path(tdir, "kg_dir")), "mudata")
-  expect_is(mudata2::read_mudata_json(file.path(tdir, "kg.json")), "mudata")
-  expect_is(mudata2::read_mudata_zip(file.path(tdir, "kg.zip")), "mudata")
-  
-  unlink(tdir, recursive = TRUE)
+  # this test fails on CRAN but should be tested locally
+  # and on travis
+  skip_on_cran()
+  tf_dir <- tempfile()
+  write_mudata_dir(md_zero, tf_dir)
+  expect_silent(read_mudata_dir(tf_dir))
+  unlink(tf_dir, recursive = TRUE)
 })

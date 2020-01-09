@@ -7,8 +7,12 @@
 \usage{
 new_mudata(md, x_columns)
 
-validate_mudata(md, check_unique = TRUE, check_references = TRUE,
-  action = stop)
+validate_mudata(
+  md,
+  check_unique = TRUE,
+  check_references = TRUE,
+  action = abort
+)
 }
 \arguments{
 \item{md}{An object of class 'mudata'}
@@ -22,7 +26,7 @@ validate_mudata(md, check_unique = TRUE, check_references = TRUE,
 \item{action}{The function to be called when errors are detected in validate_mudata}
 }
 \description{
-Validates a mudata object by calling \link{stop} when an error is found;
+Validates a mudata object by calling \link[rlang:abort]{rlang::abort} when an error is found;
 creates a mudata object from a \link{list}. Validation is generally performed
 when objects are created using \link{mudata}, or when objects are read/writen
 using \link{read_mudata} and \link{write_mudata}.

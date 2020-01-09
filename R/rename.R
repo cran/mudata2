@@ -37,11 +37,10 @@ rename_locations.default <- function(.data, ...) {
   # rename datasets using rename_locations_base
   if(any(new_locations != locations)) {
     renamer <- locations[new_locations != locations]
-    md_out <- rename_locations_base(.data, stats::setNames(names(renamer), renamer))
-  } 
-  
-  # return md_out
-  md_out
+    rename_locations_base(.data, stats::setNames(names(renamer), renamer))
+  } else {
+    .data
+  }
 }
 
 #' @rdname renamers
@@ -63,10 +62,9 @@ rename_params.default <- function(.data, ...) {
   if(any(new_params != params)) {
     renamer <- params[new_params != params]
     md_out <- rename_params_base(.data, stats::setNames(names(renamer), renamer))
+  } else {
+    .data
   }
-  
-  # return md_out
-  md_out
 }
 
 #' @rdname renamers
@@ -87,11 +85,10 @@ rename_datasets.default <- function(.data, ...) {
   # rename datasets using rename_dataset
   if(any(new_datasets != datasets)) {
     renamer <- datasets[new_datasets != datasets]
-    md_out <- rename_datasets_base(.data, stats::setNames(names(renamer), renamer))
+    rename_datasets_base(.data, stats::setNames(names(renamer), renamer))
+  } else {
+    .data
   }
-  
-  # return md_out
-  md_out
 }
 
 #' @rdname renamers
@@ -114,17 +111,17 @@ rename_columns.default <- function(.data, ...) {
     renamer <- columns[new_columns != columns]
     # don't allow renaming of required columns
     if(any(renamer %in% c("dataset", "location", "param", "table", "column", "value"))) {
-      stop("Cannot rename required mudata columns")
+      abort("Cannot rename required mudata columns")
     }
     md_out <- rename_cols_base(.data, stats::setNames(names(renamer), renamer))
     # rename x_columns as well
     attr(md_out, "x_columns") <- rename_values_base(x_columns(md_out), 
                                                     stats::setNames(names(renamer), renamer),
                                                     warn_missing = FALSE, warn_duplicated = TRUE)
+    md_out
+  } else {
+    .data
   }
-  
-  # return md_out
-  md_out
 }
 
 #' Rename a column in an object
@@ -180,7 +177,9 @@ rename_values_base <- function(x, ..., default_value = x, warn_missing = TRUE,
   }
   
   replacer <- list(...)
-  if(length(replacer) == 0) return(x)
+  if(length(replacer) == 0) {
+    return(x) # nocov
+  }
   
   # can also pass a single rename vector like c(old_val = "new_val") as first arg
   replacernames <- names(replacer)

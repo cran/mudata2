@@ -47,9 +47,12 @@ pocmajwide <- pocmajsum %>%
   rename(location = core)
 
 ## ------------------------------------------------------------------------
-pocmajlong <- parallel_gather(pocmajwide, key = "param",
-                              value = c(Ca, Ti, V), 
-                              sd = c(Ca_sd, Ti_sd, V_sd))
+pocmajlong <- parallel_gather(
+  pocmajwide, 
+  key = "param",
+  value = c(Ca, Ti, V), 
+  sd = c(Ca_sd, Ti_sd, V_sd)
+)
 
 ## ---- echo=FALSE---------------------------------------------------------
 knitr::kable(head(pocmajlong), row.names = FALSE, digits=0)
@@ -75,10 +78,14 @@ md %>%
 
 # location table with metadata
 md %>%
-  update_locations("MAJ-1", latitude = -64.298, longitude = 44.819,
-                   lake = "Lake Major") %>%
-  update_locations("POC-2", latitude = -65.985, longitude = 44.913,
-                   lake = "Pockwock Lake") %>%
+  update_locations(
+    "MAJ-1", 
+    latitude = -64.298, longitude = 44.819, lake = "Lake Major"
+  ) %>%
+  update_locations(
+    "POC-2",
+    latitude = -65.985, longitude = 44.913, lake = "Pockwock Lake"
+  ) %>%
   tbl_locations()
 
 ## ------------------------------------------------------------------------
@@ -88,17 +95,21 @@ md %>%
 
 # datasets table with metadata
 md %>%
-  update_datasets(source = "R package mudata2, version 1.0.0") %>%
+  update_datasets(source = "R package mudata2") %>%
   tbl_datasets()
 
 ## ------------------------------------------------------------------------
 md_doc <- md %>%
   update_params(method = "Portable XRF Spectrometer (Olympus X-50)") %>%
-  update_locations("MAJ-1", latitude = -63.486, longitude = 44.732,
-                   lake = "Lake Major") %>%
-  update_locations("POC-2", latitude = -63.839, longitude = 44.794,
-                   lake = "Pockwock Lake") %>%
-  update_datasets(source = "R package mudata2, version 1.0.0")
+  update_locations(
+    "MAJ-1", 
+    latitude = -63.486, longitude = 44.732, lake = "Lake Major"
+  ) %>%
+  update_locations(
+    "POC-2",
+    latitude = -63.839, longitude = 44.794, lake = "Pockwock Lake"
+  ) %>%
+  update_datasets(source = "R package mudata2")
 
 ## ------------------------------------------------------------------------
 md_doc <- md_doc %>%
@@ -119,11 +130,15 @@ md_doc %>%
 ## ------------------------------------------------------------------------
 md_doc <- md %>%
   update_params(method = "Portable XRF Spectrometer (Olympus X-50)") %>%
-  update_locations("MAJ-1", latitude = -63.486, longitude = 44.732,
-                   lake = "Lake Major") %>%
-  update_locations("POC-2", latitude = -63.839, longitude = 44.794,
-                   lake = "Pockwock Lake") %>%
-  update_datasets(source = "R package mudata2, version 1.0.0") %>%
+  update_locations(
+    "MAJ-1", 
+    latitude = -63.486, longitude = 44.732, lake = "Lake Major"
+  ) %>%
+  update_locations(
+    "POC-2",
+    latitude = -63.839, longitude = 44.794, lake = "Pockwock Lake"
+  ) %>%
+  update_datasets(source = "R package mudata2") %>%
   update_columns_table() %>%
   update_columns("depth", description = "Depth in sediment core (cm)") %>%
   update_columns("sd", description = "Standard deviation uncertainty of n=3 values")

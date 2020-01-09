@@ -52,16 +52,6 @@ test_that("tbl_data_wide works as expected", {
   )
 })
 
-test_that("unique_* functions return the correct values", {
-  expect_equal(unique_params(kentvillegreenwood),
-               distinct_params(kentvillegreenwood))
-  expect_equal(unique_locations(kentvillegreenwood),
-               distinct_locations(kentvillegreenwood))
-  expect_equal(unique_datasets(kentvillegreenwood), "ecclimate")
-  expect_equal(unique_columns(kentvillegreenwood, "data"),
-               distinct_columns(kentvillegreenwood, "data"))
-})
-
 test_that("update_datasets() function works as expected", {
   # updating a field
   updated_url <- kentvillegreenwood %>%
@@ -89,6 +79,12 @@ test_that("update_datasets() function works as expected", {
   expect_error(
     update_datasets(kentvillegreenwood, "not_a_dataset", newkey = "newval"),
     "Zero rows were found for dataset"
+  )
+  
+  # check bad values
+  expect_error(
+    update_datasets(kentvillegreenwood, newkey = c("newval1", "newval2")),
+    "values to update must all be of length 1"
   )
 })
 

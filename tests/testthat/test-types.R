@@ -156,13 +156,13 @@ test_that("default types are handled correctly", {
 
 test_that("type_str values greater than length 1 throw an error", {
   expect_error(parse_type_base(c("", "")), 
-               "type_str must be a character vector of length 1")
+               "`type_str` must be a character vector of length 1")
   expect_error(parse_type_base(character(0)), 
-               "type_str must be a character vector of length 1")
+               "`type_str` must be a character vector of length 1")
   expect_error(parse_type_base(NA), 
-               "type_str must be a character vector of length 1")
+               "`type_str` must be a character vector of length 1")
   expect_error(parse_type_base(NULL), 
-               "type_str must be a character vector of length 1")
+               "`type_str` must be a character vector of length 1")
 })
 
 test_that("types that are not in allowed types throw an error", {
@@ -310,6 +310,10 @@ test_that("objects generate the correct type strings", {
   hard_crs_proj4 <- hard_crs$proj4string
   expect_equal(generate_type_str(parse_wkt("POINT(0 0)", crs = hard_crs)), 
                sprintf("wkt(crs='%s')", hard_crs_proj4))
+  hard_crs$epsg <- NULL
+  hard_crs_proj4 <- hard_crs$proj4string
+  expect_equal(generate_type_str(parse_wkt("POINT(0 0)", crs = hard_crs)), 
+               sprintf("wkt(crs='%s')", hard_crs_proj4))
 })
 
 test_that("datetimes with timezones generate the correct strings", {
@@ -334,7 +338,7 @@ test_that("generate_type_str generates expected output", {
     c6 = as.POSIXct(c5),
     c7 = structure(list(list(1), list(2), list(3)), class = c("json_column", "list")),
     c8 = sf::st_as_sfc(c("POINT(0 0)", "POINT(1 1)", "POINT(2 2)")),
-    c9 = hms::as.hms(1:3)
+    c9 = hms::as_hms(1:3)
   )
   
   type_table <- generate_type_tbl(test_df)
@@ -349,28 +353,10 @@ test_that("generate_type_str generates expected output", {
   
 })
 
-test_that("generate_type_str works with sqlite sources", {
-  # create sqlite database with kentville greenwood dataset
-  sql_file <- tempfile()[1]
-  kg_sql <- dplyr::src_sqlite(sql_file, create = TRUE)
-  sources <- sapply(c("data", "locations", "params", "datasets", "columns"),
-                    function(table) {
-                      dplyr::copy_to(kg_sql, kentvillegreenwood[[table]], table)
-                    }, simplify = FALSE)
-  # create remote dataset
-  kv_sqlite <- mudata(data = sources$data, locations = sources$locations,
-                      params = sources$params, datasets = sources$datasets,
-                      columns = sources$columns)
-  
-  # generate type table (data table isn't identical because of  in
-  # local but not sqlite)
-  expect_identical(generate_type_tbl(kv_sqlite$locations),
-                   generate_type_tbl(kentvillegreenwood$locations))
-  
-  # clean temporary database
-  unlink(sql_file)
-  rm(kg_sql); gc() # disconnect sqlite database
-  
+test_that("generate_type_tbl() can dal with no dataset tbl", {
+  kg2 <- kentvillegreenwood
+  kg2$datasets <- NULL
+  expect_true(all(is.na(generate_type_tbl(kg2)$dataset)))
 })
 
 test_that("generate_type_str works on mudata objects", {

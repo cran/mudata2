@@ -68,7 +68,7 @@ read_mudata <- function(filename, ...) {
   } else if(dir.exists(filename)) {
     read_mudata_dir(filename, ...)
   } else {
-    stop("Don't know which format to read file '", filename, "'")
+    abort(glue::glue("Don't know which format to read file '{filename}'"))
   }
 }
 
@@ -78,7 +78,9 @@ read_mudata <- function(filename, ...) {
 write_mudata_zip <- function(md, filename, overwrite = FALSE, validate = TRUE,
                              update_columns = TRUE, ...) {
   # check if output file exists, stop if overwrite = FALSE
-  if(file.exists(filename) && !overwrite) stop("File ", filename, " exists. Use ovewrite = TRUE to overwrite.")
+  if(file.exists(filename) && !overwrite) {
+    abort(glue::glue("File '{filename}' exists. Use `overwrite = TRUE` to overwrite."))
+  }
   
   # create a temporary directory, use write_mudata_dir to write to it
   dir_file <- tempfile()[1]
@@ -88,7 +90,9 @@ write_mudata_zip <- function(md, filename, overwrite = FALSE, validate = TRUE,
   # the zip function is tricky in that it requires a working directory change
   filename <- fs::path_abs(filename)
   status <- withr::with_dir(dir_file, utils::zip(filename, list.files(), flags = "-q"))
-  if(status != 0) stop(sprintf("Writing zip file '%s' exited with status %s", filename, status))
+  if(status != 0) {
+    abort(glue::glue("Writing zip file '{filename}' exited with status '{status}'"))
+  }
   
   # return md, invisibly
   invisible(md)
@@ -98,8 +102,13 @@ write_mudata_zip <- function(md, filename, overwrite = FALSE, validate = TRUE,
 #' @export
 read_mudata_zip <- function(filename, validate = TRUE, ...) {
   # check that file exists
-  if(!file.exists(filename)) stop("File ", filename, " does not exist")
-  if(dir.exists(filename)) stop(filename, " is a directory")
+  if(!file.exists(filename)) {
+    abort(glue::glue("File '{filename}' does not exist"))
+  }
+  
+  if(dir.exists(filename)) {
+    abort(glue::glue("'{filename}' is a directory"))
+  }
   
   # create temporary directory, make sure is cleaned up on exit
   dir_file <- tempfile()[1]
@@ -119,12 +128,13 @@ write_mudata_dir <- function(md, filename, overwrite = FALSE, validate = TRUE,
                              update_columns = TRUE, ...) {
   # check that filename isn't a file
   if(file.exists(filename) && !dir.exists(filename)) {
-    stop("Not a directory: ", filename)
+    abort(glue::glue("Not a directory: '{filename}'"))
   }
   
   # check that dir doesn't already exist
-  if(file.exists(filename) && !overwrite) stop("Directory ", filename, 
-                                               " exists. Use ovewrite = TRUE to overwrite.")
+  if(file.exists(filename) && !overwrite) {
+    abort(glue::glue("Directory '{filename}' exists. Use `overwrite = TRUE` to overwrite."))
+  }
   
   # prepare using mudata_write_common
   md_write <- write_mudata_common(md, validate = validate, 
@@ -133,7 +143,13 @@ write_mudata_dir <- function(md, filename, overwrite = FALSE, validate = TRUE,
   # create output directory
   dir.create(filename, showWarnings = FALSE)
   # check that output directory was created
-  if(!dir.exists(filename)) stop("Failed to create directory: ", filename)
+  if(!dir.exists(filename)) {
+    abort(
+      glue::glue(
+        "Failed to create directory '{filename}'\nCheck that you have sufficient permissions."
+      )
+    )
+  }
   
   # treat attributes like a tbl
   md_write[["_mudata"]] <- tibble::tibble(
@@ -145,16 +161,19 @@ write_mudata_dir <- function(md, filename, overwrite = FALSE, validate = TRUE,
   # safe lapply on md_write to write_csv
   result <- lapply(names(md_write), function(tbl_name) {
     fname <- file.path(filename, paste0(gsub("[^A-Za-z0-9_.-]+", "_", tbl_name), ".csv"))
-    try(readr::write_csv(md_write[[tbl_name]], fname, na = ""))
+    try(readr::write_csv(md_write[[tbl_name]], fname, na = ""), silent = TRUE)
   })
   
   # check that write succeeded
   errors <- vapply(result, inherits, "try-error", FUN.VALUE = logical(1))
   if(any(errors)) {
     error_text <- vapply(result[errors], as.character, character(1))
-    stop("Error writing mudata to CSV:\n", 
-         paste(sprintf(" %s.csv: %s", names(md_write)[errors], error_text),
-               collapse = "\n"))
+    error_text_all <- paste(
+      sprintf(" %s.csv: %s", names(md_write)[errors], error_text),
+      collapse = "\n"
+    )
+    
+    abort(glue::glue("Error writing mudata to CSV:\n{error_text_all}"))
   } else {
     # return the input object, invisibly
     invisible(md)
@@ -165,11 +184,17 @@ write_mudata_dir <- function(md, filename, overwrite = FALSE, validate = TRUE,
 #' @export
 read_mudata_dir <- function(filename, validate = TRUE, ...) {
   # check that filename is a directory
-  if(!dir.exists(filename)) stop(filename, " does not exist or is not a directory")
+  if(!dir.exists(filename)) {
+    abort(glue::glue("'{filename}' does not exist or is not a directory"))
+  }
+  
   # look for data.csv within filename
   data_csv <- list.files(filename, pattern = "^data\\.csv$", recursive = TRUE,
                          full.names = TRUE)[1]
-  if(is.na(data_csv)) stop("data.csv not found within ", filename)
+  if(is.na(data_csv)) {
+    abort(glue::glue("'data.csv' not found within '{filename}'"))
+  }
+  
   # use dirname(data_csv) as base directory
   mudir <- dirname(data_csv)
   # warn user if this is a different directory than filename
@@ -228,8 +253,9 @@ write_mudata_json <- function(md, filename, overwrite = FALSE, validate = TRUE,
                               update_columns = TRUE, pretty = TRUE, ...) {
   
   # check if output file exists, stop if overwrite = FALSE
-  if(file.exists(filename) && !overwrite) stop("File ", filename, 
-                                               " exists. Use ovewrite = TRUE to overwrite.")
+  if(file.exists(filename) && !overwrite) {
+    abort(glue::glue("File '{filename}' exists. Use `overwrite = TRUE` to overwrite."))
+  }
   
   # call mudate_write_json_common with fun = jsonlite::write_json
   write_mudata_json_common(md, jsonlite::write_json,
@@ -268,6 +294,16 @@ write_mudata_json_common <- function(md, fun, validate = TRUE, update_columns = 
 #' @rdname write_mudata
 #' @export
 read_mudata_json <- function(filename, validate = TRUE, ...) {
+  # check that file exists
+  if(!file.exists(filename)) {
+    abort(glue::glue("File '{filename}' does not exist"))
+  }
+  
+  if(dir.exists(filename)) {
+    abort(glue::glue("'{filename}' is a directory"))
+  }
+  
+  
   read_mudata_json_common(jsonlite::read_json, path = filename, validate = validate, ...)
 }
 
@@ -282,15 +318,22 @@ read_mudata_json_common <- function(fun, validate = TRUE, ...) {
   obj <- fun(..., simplifyDataFrame = FALSE, simplifyMatrix = TRUE, simplifyVector = TRUE)
   
   # check basic names, types
-  if(!is.list(obj)) stop("JSON object is not a list")
-  if(!("data" %in% names(obj))) stop("JSON object is missing the data table")
+  if(!is.list(obj)) {
+    abort("JSON object is not a list")
+  }
+  
+  if(!("data" %in% names(obj))) {
+    abort("JSON object is missing the data table")
+  }
+  
   mudata_tbls <- c("data", "locations", "params", "datasets", "columns")
   wrong_type_tbls <- vapply(names(obj), function(tbl_name) {
     (tbl_name %in% mudata_tbls) && !is.list(obj[[tbl_name]])
   }, logical(1))
+  
   if(any(wrong_type_tbls)) {
-    stop("JSON objects of incorrect type: ", 
-         paste(names(obj)[wrong_type_tbls], collapse = ", "))
+    bad_types <- paste0("'", names(obj)[wrong_type_tbls], "'", collapse = ", ")
+    abort(glue::glue("JSON objects of incorrect type: {bad_types}"))
   }
   
   # get column type information
@@ -306,7 +349,7 @@ read_mudata_json_common <- function(fun, validate = TRUE, ...) {
   } else {
     # without the columns table, parsers can't be reliably guessed when
     # reading from JSON (because NAs are 'null's, which read as list()s)
-    stop("cannot read JSON to mudata without a columns table")
+    abort("cannot read JSON to mudata without a columns table")
   }
   
   # extract and remove metadata, if present
@@ -365,7 +408,10 @@ read_common <- function(obj, mudata_tbls, meta_list, type_strs, validate) {
 
 # common function to read a columns table (type_str_tbl)
 type_strs_from_columns <- function(columns_tbl) {
-  if(is.null(columns_tbl)) return(list())
+  if(is.null(columns_tbl)) {
+    abort("`columns_tbl` is NULL") # nocov
+  }
+  
   if(!all(c("table", "column", "type") %in% colnames(columns_tbl))) {
     # no types specified, quietly return list()
     return(list())
@@ -380,8 +426,10 @@ type_strs_from_columns <- function(columns_tbl) {
   is_unique <- try(.checkunique(type_str_tbl, 'columns', c("table", "column")), silent = TRUE)
   if(inherits(is_unique, "try-error")) {
     # duplicate values = slightly malformed columns table. return list() with a message
+    # nocov start
     message("Possibly malformed columns table: different data types for at least one column among datasets.")
     return(list())
+    # nocov end
   }
   
   # create list of type_str named lists
@@ -480,15 +528,12 @@ mudata_prepare_tbl <- function(x, format = NA, ...) {
 #' @rdname mudata_prepare_column
 #' @export 
 mudata_prepare_tbl.default <- function(x, format = NA, ...) {
-  x
+  x # nocov
 }
 
 #' @rdname mudata_prepare_column
 #' @export 
 mudata_prepare_tbl.tbl <- function(x, format = NA, ...) {
-  # collect foreign data frames
-  x <- dplyr::collect(x)
-  
   # apply mudata_prepare_column, make a tbl
   lapply(x, mudata_prepare_column, format = format, ...) %>%
     tibble::as_tibble()
@@ -497,7 +542,7 @@ mudata_prepare_tbl.tbl <- function(x, format = NA, ...) {
 #' @rdname mudata_prepare_column
 #' @export 
 mudata_prepare_tbl.data.frame <- function(x, format = NA, ...) {
-  mudata_prepare_tbl.tbl(x, format = format, ...)
+  mudata_prepare_tbl.tbl(x, format = format, ...) # nocov
 }
 
 # default is to just return the object unchanged

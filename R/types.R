@@ -56,7 +56,7 @@ generate_type_tbl.mudata <- function(x, default = "guess") {
 # generate a type table for a data.frame
 #' @rdname generate_type_tbl
 generate_type_tbl.tbl <- function(x, default = "guess") {
-  df <- x %>% utils::head() %>% dplyr::collect()
+  df <- x %>% utils::head()
   vapply(df, generate_type_str, default = default, FUN.VALUE = character(1)) %>%
     tibble::enframe(name = "column", value = "type")
 }
@@ -209,8 +209,8 @@ parse_json <- function(x, na = c("NA", ""), ...) {
 parse_wkt <- function(x, na = c("NA", ""), crs = sf::NA_crs_, ...) {
   # check if sf is installed, if not, return character vector with a warning
   if(!requireNamespace("sf", quietly = TRUE)) {
-    warning("Package 'sf' required to read wkt columns. Keeping column as is.")
-    return(x)
+    rlang::warn("Package 'sf' required to read wkt columns. Keeping column as is.") # nocov
+    return(x) # nocov
   }
   
   # make x a character vector
@@ -232,9 +232,8 @@ parse_wkt_lapply <- function(x, na = c("NA", ""), crs = sf::NA_crs_, ...) {
   x <- as.character(x)
   
   # use st_as_sfc to parse WKT from non-NA values
+  # NAs are handled by parse_lapply
   col <- parse_lapply(x, function(element) {
-    # remove NA values before parsing
-    if(is.na(element) | (element %in% na)) return(NULL)
     sf::st_as_sfc(element, na = na, ...)[[1]]
   })
   
@@ -256,7 +255,9 @@ parse_lapply <- function(x, fun, na = c("NA", ""), ...) {
   # safely lapply
   col <- lapply(x, function(element) {
     # NAs become NULL
-    if(is.na(element) || (element %in% na)) return(NULL) # literal NULL
+    if(is.na(element) || (element %in% na)) {
+      return(NULL) # literal NULL
+    }
     
     # apply fun to elemement
     try(fun(element), silent = TRUE)
@@ -340,8 +341,8 @@ parse_type <- function(type_str) {
   type_obj <- parse_type_base(type_str)
   
   if(!type_obj$type %in% c(allowed_types_extra, allowed_types_readr)) {
-    stop("Type must be one of ", 
-         paste(c(allowed_types_readr, allowed_types_extra), collapse = ", "))
+    allowed_types <- paste0("'", c(allowed_types_readr, allowed_types_extra), "'", collapse = ", ")
+    abort(glue::glue("Type must be one of {allowed_types}"))
   }
   
   # return type obj
@@ -351,7 +352,7 @@ parse_type <- function(type_str) {
 parse_type_base <- function(type_str) {
   # check that type_str is a character vector of length 1
   if(!is.character(type_str) || (length(type_str) != 1)) {
-    stop("type_str must be a character vector of length 1")
+    abort("`type_str` must be a character vector of length 1")
   }
   
   # default is a type of character with no arguments
@@ -372,18 +373,22 @@ parse_type_base <- function(type_str) {
     all_matches <- arg_match[, 1, drop = TRUE]
     if(stringr::str_length(paste(all_matches, collapse = "")) !=
        stringr::str_length(arg_string)) {
-      stop("Invalid argument string: ", arg_string)
+      abort(glue::glue("Invalid argument string: '{arg_string}'"))
     }
     
     # check for commas at the end of the string
-    if(grepl(",\\s*$", arg_string)) stop("Invalid argument string: ", arg_string)
+    if(grepl(",\\s*$", arg_string)) {
+      abort(glue::glue("Invalid argument string: '{arg_string}'"))
+    }
     
     # check separator values for things that aren't "" or commas
     seps <- dplyr::coalesce(arg_match[, 5, drop = TRUE],
                             arg_match[, 8, drop = TRUE],
                             arg_match[, 11, drop = TRUE])
     bad_seps <- seps[!grepl(",", seps) & (seps != "")]
-    if(length(bad_seps) > 0) stop("Invalid argument string: ", arg_string)
+    if(length(bad_seps) > 0) {
+      abort(glue::glue("Invalid argument string: '{arg_string}'"))
+    }
     
     # extract names, arguments, which argument type
     arg_names <- dplyr::coalesce(arg_match[, 2, drop = TRUE],
@@ -407,7 +412,7 @@ parse_type_base <- function(type_str) {
     # type_str is type with no args
     list(type = type_str, args = stats::setNames(list(), character(0)))
   } else {
-    stop("Invalid type specification: ", type_str)
+    abort(glue::glue("Invalid type specification: '{type_str}'"))
   }
 }
 
@@ -421,17 +426,21 @@ parse_list_string <- function(list_str) {
   all_items <- item_matches[, 1, drop = TRUE]
   if(stringr::str_length(paste(all_items, collapse = "")) !=
      stringr::str_length(list_str)) {
-    stop("Invalid list string: ", list_str)
+    abort(glue::glue("Invalid list string: '{list_str}'"))
   }
   
   # check for commas at the end of the string
-  if(grepl(",\\s*$", list_str)) stop("Invalid list string: ", list_str)
+  if(grepl(",\\s*$", list_str)) {
+    abort(glue::glue("Invalid list string: '{list_str}'"))
+  }
   
   # check separator values for things that aren't "" or commas
   seps <- dplyr::coalesce(item_matches[, 4, drop = TRUE],
                           item_matches[, 6, drop = TRUE])
   bad_seps <- seps[!grepl(",", seps) & (seps != "")]
-  if(length(bad_seps) > 0) stop("Invalid list string: ", list_str)
+  if(length(bad_seps) > 0) {
+    abort(glue::glue("Invalid list string: '{list_str}'"))
+  }
   
   # extract values, types
   item_values <- dplyr::coalesce(item_matches[, 3, drop = TRUE],
