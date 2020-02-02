@@ -274,27 +274,26 @@ filter_data.default <- function(.data, ...) {
   filter_args <- quos(...)
   if(length(filter_args) == 0) return(.data)
   
-  # lazily filter data
+  # filter data
   dta <- dplyr::filter(.data$data, !!!filter_args)
-  
-  # redefine params, locations, datasets to reflect subsetted data
-  params <- dplyr::distinct(dta, .data$param)$param
-  locations <- dplyr::distinct(dta, .data$location)$location
-  datasets <- dplyr::distinct(dta, .data$dataset)$dataset
-  
-  pm <- dplyr::filter(.data$params, .data$param %in% params, .data$dataset %in% datasets)
-  lc <- dplyr::filter(.data$locations, .data$location %in% locations, .data$dataset %in% datasets)
-  cl <- dplyr::filter(.data$columns, .data$dataset %in% datasets, .data$dataset %in% datasets)
-  ds <- dplyr::filter(.data$datasets, .data$dataset %in% datasets)
+  filter_data_base(.data, dta)
+}
+
+# syncs data with other tables
+filter_data_base <- function(.data, dta) {
+  pm <- dplyr::semi_join(.data$params, dta, by = c("dataset", "param"))
+  lc <- dplyr::semi_join(.data$locations, dta, by = c("dataset", "location"))
+  cl <- dplyr::semi_join(.data$columns, dta, by = "dataset")
+  ds <- dplyr::semi_join(.data$datasets, dta, by = "dataset")
   
   # keep class of original
   new_mudata(
     list(
-      data=dta,
-      locations=lc, 
-      params=pm,
-      datasets=ds, 
-      columns=cl
+      data = dta,
+      locations = lc, 
+      params = pm,
+      datasets = ds, 
+      columns = cl
     ), 
     x_columns = x_columns(.data)
   )
@@ -309,14 +308,9 @@ filter_locations <- function(.data, ...) {
 #' @rdname filterers
 #' @export
 filter_locations.default <- function(.data, ...) {
-  filter_args <- quos(...)
-  if(length(filter_args) == 0) return(.data)
-  
-  locations <- .data$locations %>%
-    dplyr::filter(!!!filter_args) %>%
-    dplyr::mutate(.id = paste(.data$dataset, .data$location, sep = "/////")) %>%
-    dplyr::pull(".id")
-  filter_data(.data, paste(.data$dataset, .data$location, sep = "/////") %in% locations)
+  new_locations <- dplyr::filter(.data$locations, ...)
+  new_data <- dplyr::semi_join(.data$data, new_locations, by = c("dataset", "location"))
+  filter_data_base(.data, new_data)
 }
 
 #' @rdname filterers
@@ -328,14 +322,24 @@ filter_params <- function(.data, ...) {
 #' @rdname filterers
 #' @export
 filter_params.default <- function(.data, ...) {
-  filter_args <- quos(...)
-  if(length(filter_args) == 0) return(.data)
-  
-  params <- .data$params %>%
-    dplyr::filter(!!!filter_args) %>%
-    dplyr::mutate(.id = paste(.data$dataset, .data$param, sep = "/////")) %>%
-    dplyr::pull(".id")
-  filter_data(.data, paste(.data$dataset, .data$param, sep = "/////") %in% params)
+  new_params <- dplyr::filter(.data$params, ...)
+  new_data <- dplyr::semi_join(.data$data, new_params, by = c("dataset", "param"))
+  filter_data_base(.data, new_data)
+}
+
+.vars_rename <- function(names, type, ...) {
+  tryCatch(
+    tidyselect::vars_rename(names, ...),
+    error = function(e) {
+      if (inherits(e, "vctrs_error_subscript_oob")) {
+        rlang::abort(glue::glue("No such {type}: `{e$i}`"), parent = e, class = "no_such_item")
+      } else if(inherits(e, "vctrs_error_names_must_be_unique")) {
+        rlang::abort(glue::glue("{type}s must be unique"), class = "item_not_unique")
+      } else {
+        rlang::abort(glue::glue("Error during {type} renaming: {e}"))
+      }
+    }
+  )
 }
 
 .tidyselect_vars <- function(x, type) {

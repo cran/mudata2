@@ -1,6 +1,6 @@
 Package: mudata2
 Title: Interchange Tools for Multi-Parameter Spatiotemporal Data
-Version: 1.1.0
+Version: 1.1.1
 Authors@R: person("Dewey", "Dunnington",
     email = "dewey@fishandwhistle.net", 
     role = c("aut", "cre"), 
@@ -16,8 +16,8 @@ Imports: ggplot2, dplyr (>= 0.7), jsonlite (>= 1.2), tibble, magrittr,
         stringr, readr, tidyr, lubridate, rlang, tidyselect, withr,
         glue, fs
 Depends: R (>= 3.2.0)
-Suggests: testthat (>= 2.1.0), RSQLite, dbplyr, sf (>= 0.5.5), covr,
-        hms, knitr, rmarkdown
+Suggests: testthat (>= 2.1.0), sf (>= 0.5.5), covr, hms, knitr,
+        rmarkdown
 License: GPL-2
 URL: https://paleolimbot.github.io/mudata2,
         https://github.com/paleolimbot/mudata2
@@ -27,7 +27,7 @@ RoxygenNote: 7.0.1
 Encoding: UTF-8
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-01-08 15:21:10 UTC; dewey
+Packaged: 2020-02-02 15:25:31 UTC; dewey
 Author: Dewey Dunnington [aut, cre] (<https://orcid.org/0000-0002-9415-4582>)
 Repository: CRAN
-Date/Publication: 2020-01-09 16:50:02 UTC
+Date/Publication: 2020-02-02 15:40:02 UTC
