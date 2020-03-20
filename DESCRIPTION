@@ -1,6 +1,6 @@
 Package: mudata2
 Title: Interchange Tools for Multi-Parameter Spatiotemporal Data
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: person("Dewey", "Dunnington",
     email = "dewey@fishandwhistle.net", 
     role = c("aut", "cre"), 
@@ -23,11 +23,11 @@ URL: https://paleolimbot.github.io/mudata2,
         https://github.com/paleolimbot/mudata2
 BugReports: https://github.com/paleolimbot/mudata2/issues
 LazyData: true
-RoxygenNote: 7.0.1
+RoxygenNote: 7.0.2
 Encoding: UTF-8
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2020-02-02 15:25:31 UTC; dewey
+Packaged: 2020-03-20 19:41:46 UTC; dewey
 Author: Dewey Dunnington [aut, cre] (<https://orcid.org/0000-0002-9415-4582>)
 Repository: CRAN
-Date/Publication: 2020-02-02 15:40:02 UTC
+Date/Publication: 2020-03-20 20:20:03 UTC
