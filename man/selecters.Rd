@@ -24,9 +24,9 @@ select_params(.data, ...)
 \arguments{
 \item{.data}{A mudata object}
 
-\item{...}{Quoted names, bare names, or helpers like \link[dplyr:starts_with]{starts_with},
-\link[dplyr:contains]{contains}, \link[dplyr:ends_with]{ends_with}, \link[dplyr:one_of]{one_of},
-or \link[dplyr:matches]{matches}.}
+\item{...}{Quoted names, bare names, or helpers like \link[dplyr:reexports]{starts_with},
+\link[dplyr:reexports]{contains}, \link[dplyr:reexports]{ends_with}, \link[dplyr:reexports]{one_of},
+or \link[dplyr:reexports]{matches}.}
 
 \item{.factor}{If TRUE, the new object will keep the order specified by converting
 columns to factors. This may be useful for specifying order when using
@@ -42,12 +42,14 @@ be renamed using keyword arguments, identical to dplyr selection syntax.
 }
 \examples{
 # renaming can be handy when locations are verbosely named
-ns_climate \%>\% 
-  select_locations(sable_island = starts_with("SABLE"),
-                   nappan = starts_with("NAPPAN"), 
-                   baddeck = starts_with("BADDECK")) \%>\% 
+ns_climate \%>\%
+  select_locations(
+    sable_island = starts_with("SABLE"),
+    nappan = starts_with("NAPPAN"),
+    baddeck = starts_with("BADDECK")
+  ) \%>\%
   select_params(ends_with("temp"))
-  
+
 # can also use quoted values
 long_lake \%>\%
   select_params("Pb", "As", "Cr")
@@ -55,7 +57,7 @@ long_lake \%>\%
 # can also use negative values to remove params/datasets/locations
 long_lake \%>\%
   select_params(-Pb)
-  
+
 # to get around non-standard evaluation, use one_of()
 my_params <- c("Pb", "As", "Cr")
 long_lake \%>\%

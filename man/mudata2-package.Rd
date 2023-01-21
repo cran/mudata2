@@ -6,16 +6,12 @@
 \alias{mudata2-package}
 \title{mudata2: Interchange Tools for Multi-Parameter Spatiotemporal Data}
 \description{
-Formatting and structuring multi-parameter spatiotemporal data
-  is often a time-consuming task. This package offers functions and data structures 
-  designed to easily organize and visualize these data for applications in geology, 
-  paleolimnology, dendrochronology, and paleoclimate. See Dunnington and Spooner (2018)
-  <doi:10.1139/facets-2017-0026>.
+Formatting and structuring multi-parameter spatiotemporal data is often a time-consuming task. This package offers functions and data structures designed to easily organize and visualize these data for applications in geology, paleolimnology, dendrochronology, and paleoclimate. See Dunnington and Spooner (2018) \doi{10.1139/facets-2017-0026}.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://paleolimbot.github.io/mudata2}
+  \item \url{https://paleolimbot.github.io/mudata2/}
   \item \url{https://github.com/paleolimbot/mudata2}
   \item Report bugs at \url{https://github.com/paleolimbot/mudata2/issues}
 }

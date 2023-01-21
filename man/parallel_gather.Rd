@@ -24,27 +24,31 @@ A gathered data frame.
 }
 \description{
 Essentially this is a wrapper around \link[tidyr:gather]{gather} that
-is able to \link[dplyr:bind_cols]{bind_cols} with several gather operations. This is useful when a wide
+is able to \link[dplyr:bind]{bind_cols} with several gather operations. This is useful when a wide
 data frame contains uncertainty or flag information in paired columns.
 }
 \examples{
 # gather paired value/error columns using
 # parallel_gather
-parallel_gather(pocmajsum, key = "param", 
-                value = c(Ca, Ti, V), 
-                sd = c(Ca_sd, Ti_sd, V_sd))
+parallel_gather(pocmajsum,
+  key = "param",
+  value = c(Ca, Ti, V),
+  sd = c(Ca_sd, Ti_sd, V_sd)
+)
 
 # identical result using only tidyverse functions
-library(dplyr)      
+library(dplyr)
 library(tidyr)
 gathered_values <- pocmajsum \%>\%
   select(core, depth, Ca, Ti, V) \%>\%
-  gather(Ca, Ti, V, 
-         key = "param", value = "value")
+  gather(Ca, Ti, V,
+    key = "param", value = "value"
+  )
 gathered_sds <- pocmajsum \%>\%
   select(core, depth, Ca_sd, Ti_sd, V_sd) \%>\%
-  gather(Ca_sd, Ti_sd, V_sd, 
-         key = "param_sd", value = "sd")
+  gather(Ca_sd, Ti_sd, V_sd,
+    key = "param_sd", value = "sd"
+  )
 
 bind_cols(
   gathered_values,

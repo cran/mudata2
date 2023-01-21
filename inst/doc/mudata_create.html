@@ -1,88 +1,118 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Dewey Dunnington" />
 
-<meta name="date" content="2020-03-20" />
+<meta name="date" content="2023-01-20" />
 
 <title>Creating mudata objects</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {  }
+{ }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -91,13 +121,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -105,6 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -118,9 +156,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -289,7 +324,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -304,51 +340,108 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Creating mudata objects</h1>
 <h4 class="author">Dewey Dunnington</h4>
-<h4 class="date">2020-03-20</h4>
+<h4 class="date">2023-01-20</h4>
 
 
 
-<p>As demonstrated in <code>vignette(&quot;mudata2&quot;, package = &quot;mudata2&quot;)</code>, mudata objects are easy to use and have a quick data-to-analysis time. In contrast, getting data into the format takes a little more time, and requires some familiarity with <strong>dplyr</strong> and <strong>tidyr</strong>. This process is essentially the data cleaning step, except that instead of discarding all the information that you don’t need (or won’t fit in the output data structure), you can keep almost everything, possibly adding some documentation that didn’t previously exist. This is a front-end investment of time that will make subsequent users of the data better informed about how and why the data were collected in the first place.</p>
-<p>(Mostly) universal data (mudata) objects are created using the <code>mudata()</code> function, which at minimum takes a data frame/tibble with one row per measurement. As an example, I’ll use the data table from the <code>ns_climate</code> dataset:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(mudata2)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">ns_climate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tbl_data</span>()</a></code></pre></div>
-<pre><code>## # A tibble: 115,541 x 7
-##    dataset        location      param      date       value flag  flag_text
-##    &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
-##  1 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-01-01  NA   M     Missing  
-##  2 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-02-01  NA   M     Missing  
-##  3 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-03-01  NA   M     Missing  
-##  4 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-04-01  NA   M     Missing  
-##  5 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-05-01  NA   M     Missing  
-##  6 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-06-01  NA   M     Missing  
-##  7 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-07-01  NA   M     Missing  
-##  8 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-08-01  NA   M     Missing  
-##  9 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-09-01  NA   M     Missing  
-## 10 ecclimate_mon… SABLE ISLAND… mean_max_… 1897-10-01  12.2 &lt;NA&gt;  &lt;NA&gt;     
-## # … with 115,531 more rows</code></pre>
-<p>At minimum the data table must contain the columns <code>param</code> and <code>value</code>. The <code>param</code> column contains the identifier of the measured parameter (a character vector), and the <code>value</code> column contains the value of the measurement (there is no restriction on what type this is except that it has to be the same type for all parameters; see below for ways around this). To represent measurements at more than one location, you can include a location column with location identifiers (a character vector). To represent measurements at more than one point in time, you can include a column between <code>param</code> and <code>value</code> specifying at what time the measurement was taken. To the right of the <code>value</code> column, you can include any columns needed to add context to <code>value</code> (I typically use this for uncertainty, detection limits, and comments on a particular measurement).</p>
-<p>In the context of <code>ns_climate</code>, the <code>location</code> column contains station names like “SABLE ISLAND”, the <code>param</code> column contains measurement names like “mean_max_temp”, and the point in time the measurement was taken is included in the <code>date</code> column. To the right of the <code>value</code> column, there are two columns that add extra “flag” information provided by Environment Canada. These data are distributed with Environment Canada climate downloads, but are often discarded because the 12 paired columns in the standard wide data format in which they are distributed are a bit unwieldy.</p>
+<p>As demonstrated in
+<code>vignette(&quot;mudata2&quot;, package = &quot;mudata2&quot;)</code>, mudata objects
+are easy to use and have a quick data-to-analysis time. In contrast,
+getting data into the format takes a little more time, and requires some
+familiarity with <strong>dplyr</strong> and <strong>tidyr</strong>. This
+process is essentially the data cleaning step, except that instead of
+discarding all the information that you don’t need (or won’t fit in the
+output data structure), you can keep almost everything, possibly adding
+some documentation that didn’t previously exist. This is a front-end
+investment of time that will make subsequent users of the data better
+informed about how and why the data were collected in the first
+place.</p>
+<p>(Mostly) universal data (mudata) objects are created using the
+<code>mudata()</code> function, which at minimum takes a data
+frame/tibble with one row per measurement. As an example, I’ll use the
+data table from the <code>ns_climate</code> dataset:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mudata2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ns_climate <span class="sc">%&gt;%</span> <span class="fu">tbl_data</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 115,541 × 7
+##    dataset           location          param      date       value flag  flag_…¹
+##    &lt;chr&gt;             &lt;chr&gt;             &lt;chr&gt;      &lt;date&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  
+##  1 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-01-01  NA   M     Missing
+##  2 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-02-01  NA   M     Missing
+##  3 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-03-01  NA   M     Missing
+##  4 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-04-01  NA   M     Missing
+##  5 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-05-01  NA   M     Missing
+##  6 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-06-01  NA   M     Missing
+##  7 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-07-01  NA   M     Missing
+##  8 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-08-01  NA   M     Missing
+##  9 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-09-01  NA   M     Missing
+## 10 ecclimate_monthly SABLE ISLAND 6454 mean_max_… 1897-10-01  12.2 &lt;NA&gt;  &lt;NA&gt;   
+## # … with 115,531 more rows, and abbreviated variable name ¹​flag_text</code></pre>
+<p>At minimum the data table must contain the columns <code>param</code>
+and <code>value</code>. The <code>param</code> column contains the
+identifier of the measured parameter (a character vector), and the
+<code>value</code> column contains the value of the measurement (there
+is no restriction on what type this is except that it has to be the same
+type for all parameters; see below for ways around this). To represent
+measurements at more than one location, you can include a location
+column with location identifiers (a character vector). To represent
+measurements at more than one point in time, you can include a column
+between <code>param</code> and <code>value</code> specifying at what
+time the measurement was taken. To the right of the <code>value</code>
+column, you can include any columns needed to add context to
+<code>value</code> (I typically use this for uncertainty, detection
+limits, and comments on a particular measurement).</p>
+<p>In the context of <code>ns_climate</code>, the <code>location</code>
+column contains station names like “SABLE ISLAND”, the
+<code>param</code> column contains measurement names like
+“mean_max_temp”, and the point in time the measurement was taken is
+included in the <code>date</code> column. To the right of the
+<code>value</code> column, there are two columns that add extra “flag”
+information provided by Environment Canada. These data are distributed
+with Environment Canada climate downloads, but are often discarded
+because the 12 paired columns in the standard wide data format in which
+they are distributed are a bit unwieldy.</p>
 <p>In general, the steps to create a mudata object are:</p>
 <ul>
-<li><strong>Create the data table</strong> using the data wrangling tools in the <strong>tidyverse</strong>.</li>
+<li><strong>Create the data table</strong> using the data wrangling
+tools in the <strong>tidyverse</strong>.</li>
 <li><strong>Create the object</strong> using <code>mudata()</code>.</li>
-<li><strong>Add the metadata</strong> using <code>update_locations()</code>, <code>update_params()</code>, and <code>update_datasets()</code>.</li>
-<li><strong>Update the columns table</strong> using <code>update_columns_table()</code> to include the metadata columns you just added in the columns table.</li>
-<li><strong>Add column descriptions</strong> using <code>update_columns()</code>.</li>
-<li><strong>Write the object to disk</strong> using <code>write_mudata()</code>.</li>
+<li><strong>Add the metadata</strong> using
+<code>update_locations()</code>, <code>update_params()</code>, and
+<code>update_datasets()</code>.</li>
+<li><strong>Update the columns table</strong> using
+<code>update_columns_table()</code> to include the metadata columns you
+just added in the columns table.</li>
+<li><strong>Add column descriptions</strong> using
+<code>update_columns()</code>.</li>
+<li><strong>Write the object to disk</strong> using
+<code>write_mudata()</code>.</li>
 </ul>
 <div id="creating-the-data-table" class="section level2">
 <h2>Creating the data table</h2>
-<p>As an example, I’m going to use a small subset of the sediment chemistry data that I work with on a regular basis. Instead of being aligned along the “time” or “date” axis, these data are aligned along the “depth” axis, or in other words, the columns that identify each measurement are <code>location</code> (the sediment sample ID), <code>param</code> (the chemical that was measured), and <code>depth</code> (the position in the sediment sample). This dataset is included in the package as <code>pocmaj</code> and <code>pocmajsum</code>.</p>
-<p>I’ll use the <strong>tidyverse</strong> for data wrangling, and the <code>pocmaj</code> and <code>pocmajsum</code> datasets to illustrate how to get from common data formats to the parameter-long, one-row-per-measurement data needed by the <code>mudata()</code> function.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">data</span>(<span class="st">&quot;pocmaj&quot;</span>)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw">data</span>(<span class="st">&quot;pocmajsum&quot;</span>)</a></code></pre></div>
+<p>As an example, I’m going to use a small subset of the sediment
+chemistry data that I work with on a regular basis. Instead of being
+aligned along the “time” or “date” axis, these data are aligned along
+the “depth” axis, or in other words, the columns that identify each
+measurement are <code>location</code> (the sediment sample ID),
+<code>param</code> (the chemical that was measured), and
+<code>depth</code> (the position in the sediment sample). This dataset
+is included in the package as <code>pocmaj</code> and
+<code>pocmajsum</code>.</p>
+<p>I’ll use the <strong>tidyverse</strong> for data wrangling, and the
+<code>pocmaj</code> and <code>pocmajsum</code> datasets to illustrate
+how to get from common data formats to the parameter-long,
+one-row-per-measurement data needed by the <code>mudata()</code>
+function.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;pocmaj&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;pocmajsum&quot;</span>)</span></code></pre></div>
 <div id="case-1-wide-summarised-data" class="section level3">
 <h3>Case 1: Wide, summarised data</h3>
-<p>Parameter-wide, summarised data is the probably the most common form of data. If you’ve gotten this far, there is a good chance that you have data like this hanging around somewhere:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">pocmajwide &lt;-<span class="st"> </span>pocmajsum <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw">select</span>(core, depth, Ca, V, Ti)</a></code></pre></div>
+<p>Parameter-wide, summarised data is the probably the most common form
+of data. If you’ve gotten this far, there is a good chance that you have
+data like this hanging around somewhere:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pocmajwide <span class="ot">&lt;-</span> pocmajsum <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(core, depth, Ca, V, Ti)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -446,12 +539,22 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </tr>
 </tbody>
 </table>
-<p>This is a small subset of paleolimnological data for two sediment cores near Halifax, Nova Scotia. The data is a multi-parameter spatiotemporal dataset because it contains multiple parameters (calcium, titanium, and vanadium concentrations) measured along a common axis (depth in the sediment core) at discrete locations (cores named MAJ-1 and POC-2). Currently, our columns are not named properly: for the mudata format the terminology is ‘location’ not ‘core’. The <code>rename()</code> function is the easiest way to do this.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">pocmajwide &lt;-<span class="st"> </span>pocmajwide <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">location =</span> core)</a></code></pre></div>
-<p>Finally, we need to get the data into a parameter-long format, with a column named <code>param</code> and our actual values in a single column called <code>value</code>. This can be done using the <code>gather()</code> function.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">pocmajlong &lt;-<span class="st"> </span>pocmajwide <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="st">  </span><span class="kw">gather</span>(Ca, Ti, V, <span class="dt">key =</span> <span class="st">&quot;param&quot;</span>, <span class="dt">value =</span> <span class="st">&quot;value&quot;</span>)</a></code></pre></div>
+<p>This is a small subset of paleolimnological data for two sediment
+cores near Halifax, Nova Scotia. The data is a multi-parameter
+spatiotemporal dataset because it contains multiple parameters (calcium,
+titanium, and vanadium concentrations) measured along a common axis
+(depth in the sediment core) at discrete locations (cores named MAJ-1
+and POC-2). Currently, our columns are not named properly: for the
+mudata format the terminology is ‘location’ not ‘core’. The
+<code>rename()</code> function is the easiest way to do this.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>pocmajwide <span class="ot">&lt;-</span> pocmajwide <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">location =</span> core)</span></code></pre></div>
+<p>Finally, we need to get the data into a parameter-long format, with a
+column named <code>param</code> and our actual values in a single column
+called <code>value</code>. This can be done using the
+<code>gather()</code> function.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pocmajlong <span class="ot">&lt;-</span> pocmajwide <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(Ca, Ti, V, <span class="at">key =</span> <span class="st">&quot;param&quot;</span>, <span class="at">value =</span> <span class="st">&quot;value&quot;</span>)</span></code></pre></div>
 <p>The (first six rows of the) data now look like this:</p>
 <table>
 <thead>
@@ -501,11 +604,20 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </tr>
 </tbody>
 </table>
-<p>The last important thing to consider is the axis on which the data are aligned. This sounds complicated but isn’t: these axes are the same axes you might use to plot the data, in this case <code>depth</code>. The <code>mudata()</code> constructor needs to know which column this is, either by explicitly passing <code>x_columns = &quot;depth&quot;</code> or by placing the column between “param” and “value”. In most cases (like this one) it can be guessed (you’ll see a message telling you which columns were assigned this value).</p>
-<p>Now the data is ready to be put into the <code>mudata()</code> constructor. If it isn’t, the constructor will throw an error telling you how to fix the data.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">md &lt;-<span class="st"> </span><span class="kw">mudata</span>(pocmajlong)</a></code></pre></div>
+<p>The last important thing to consider is the axis on which the data
+are aligned. This sounds complicated but isn’t: these axes are the same
+axes you might use to plot the data, in this case <code>depth</code>.
+The <code>mudata()</code> constructor needs to know which column this
+is, either by explicitly passing <code>x_columns = &quot;depth&quot;</code> or by
+placing the column between “param” and “value”. In most cases (like this
+one) it can be guessed (you’ll see a message telling you which columns
+were assigned this value).</p>
+<p>Now the data is ready to be put into the <code>mudata()</code>
+constructor. If it isn’t, the constructor will throw an error telling
+you how to fix the data.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>md <span class="ot">&lt;-</span> <span class="fu">mudata</span>(pocmajlong)</span></code></pre></div>
 <pre><code>## Guessing x columns: depth</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">md</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>md</span></code></pre></div>
 <pre><code>## A mudata object aligned along &quot;depth&quot;
 ##   distinct_datasets():  &quot;default&quot;
 ##   distinct_locations(): &quot;MAJ-1&quot;, &quot;POC-2&quot;
@@ -513,7 +625,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   src_tbls():           &quot;data&quot;, &quot;locations&quot; ... and 3 more
 ## 
 ## tbl_data() %&gt;% head():
-## # A tibble: 6 x 5
+## # A tibble: 6 × 5
 ##   dataset location param depth value
 ##   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;dbl&gt;
 ## 1 default MAJ-1    Ca        0 1885.
@@ -525,8 +637,15 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="case-2-wide-summarised-data-with-uncertainty" class="section level3">
 <h3>Case 2: Wide, summarised data with uncertainty</h3>
-<p>Data is often output in a format similar to the format above, but with uncertainty information in paired columns. Data from an ICP-MS, for example is often in this format, with the concentration and a +/- column next to it. One of the advantages of a long format is the ability to include this information in a way that makes plotting with error bars easier. The <code>pocmajsum</code> dataset is a version of the dataset described above, but with standard deviation values in paired columns with the value itself.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">pocmajsum</a></code></pre></div>
+<p>Data is often output in a format similar to the format above, but
+with uncertainty information in paired columns. Data from an ICP-MS, for
+example is often in this format, with the concentration and a +/- column
+next to it. One of the advantages of a long format is the ability to
+include this information in a way that makes plotting with error bars
+easier. The <code>pocmajsum</code> dataset is a version of the dataset
+described above, but with standard deviation values in paired columns
+with the value itself.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pocmajsum</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -663,16 +782,20 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </tr>
 </tbody>
 </table>
-<p>As above, we need to rename the <code>core</code> column to <code>location</code> using the <code>rename()</code> function.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">pocmajwide &lt;-<span class="st"> </span>pocmajsum <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">location =</span> core)</a></code></pre></div>
-<p>Then (also as above), we need to <code>gather()</code> the data to get it into long form. Because we have paired columns, this is handled by a different function (from the mudata package) called <code>parallel_gather()</code>.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">pocmajlong &lt;-<span class="st"> </span><span class="kw">parallel_gather</span>(</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2">  pocmajwide, </a>
-<a class="sourceLine" id="cb13-3" data-line-number="3">  <span class="dt">key =</span> <span class="st">&quot;param&quot;</span>,</a>
-<a class="sourceLine" id="cb13-4" data-line-number="4">  <span class="dt">value =</span> <span class="kw">c</span>(Ca, Ti, V), </a>
-<a class="sourceLine" id="cb13-5" data-line-number="5">  <span class="dt">sd =</span> <span class="kw">c</span>(Ca_sd, Ti_sd, V_sd)</a>
-<a class="sourceLine" id="cb13-6" data-line-number="6">)</a></code></pre></div>
+<p>As above, we need to rename the <code>core</code> column to
+<code>location</code> using the <code>rename()</code> function.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pocmajwide <span class="ot">&lt;-</span> pocmajsum <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">location =</span> core)</span></code></pre></div>
+<p>Then (also as above), we need to <code>gather()</code> the data to
+get it into long form. Because we have paired columns, this is handled
+by a different function (from the mudata package) called
+<code>parallel_gather()</code>.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pocmajlong <span class="ot">&lt;-</span> <span class="fu">parallel_gather</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  pocmajwide,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">key =</span> <span class="st">&quot;param&quot;</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="fu">c</span>(Ca, Ti, V),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(Ca_sd, Ti_sd, V_sd)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -728,10 +851,11 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </tr>
 </tbody>
 </table>
-<p>The data is now ready to be fed to the <code>mudata()</code> constructor:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">md &lt;-<span class="st"> </span><span class="kw">mudata</span>(pocmajlong)</a></code></pre></div>
+<p>The data is now ready to be fed to the <code>mudata()</code>
+constructor:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>md <span class="ot">&lt;-</span> <span class="fu">mudata</span>(pocmajlong)</span></code></pre></div>
 <pre><code>## Guessing x columns: depth</code></pre>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">md</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>md</span></code></pre></div>
 <pre><code>## A mudata object aligned along &quot;depth&quot;
 ##   distinct_datasets():  &quot;default&quot;
 ##   distinct_locations(): &quot;MAJ-1&quot;, &quot;POC-2&quot;
@@ -739,7 +863,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   src_tbls():           &quot;data&quot;, &quot;locations&quot; ... and 3 more
 ## 
 ## tbl_data() %&gt;% head():
-## # A tibble: 6 x 6
+## # A tibble: 6 × 6
 ##   dataset location param depth value    sd
 ##   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1 default MAJ-1    Ca        0 1885.  452.
@@ -752,89 +876,115 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="adding-metadata" class="section level2">
 <h2>Adding metadata</h2>
-<p>When mudata objects are created using only the data table, the package creates the necessary tables for parameter, location, and dataset metadata (if you have these tables prepared already, you can pass them as the arguments <code>locations</code>, <code>params</code>, and <code>datasets</code>). These tables provide a place to put metadata, but doesn’t create any by default. This data is usually needed later, and including it in the object at the point of creation avoids others or future you from scratching their (your) heads with the question “where <em>did</em> core POC-2 come from anyway…”. To do this, you can update the tables using <code>update_params()</code>, <code>update_locations()</code>, and <code>update_datasets()</code>. The first argument of these functions is a vector of identifiers to update (or all of them if not specified), followed by key/value pairs.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># default parameter table</span></a>
-<a class="sourceLine" id="cb18-2" data-line-number="2">md <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="st">  </span><span class="kw">tbl_params</span>()</a></code></pre></div>
-<pre><code>## # A tibble: 3 x 2
+<p>When mudata objects are created using only the data table, the
+package creates the necessary tables for parameter, location, and
+dataset metadata (if you have these tables prepared already, you can
+pass them as the arguments <code>locations</code>, <code>params</code>,
+and <code>datasets</code>). These tables provide a place to put
+metadata, but doesn’t create any by default. This data is usually needed
+later, and including it in the object at the point of creation avoids
+others or future you from scratching their (your) heads with the
+question “where <em>did</em> core POC-2 come from anyway…”. To do this,
+you can update the tables using <code>update_params()</code>,
+<code>update_locations()</code>, and <code>update_datasets()</code>. The
+first argument of these functions is a vector of identifiers to update
+(or all of them if not specified), followed by key/value pairs.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># default parameter table</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>md <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_params</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 2
 ##   dataset param
 ##   &lt;chr&gt;   &lt;chr&gt;
 ## 1 default Ca   
 ## 2 default Ti   
 ## 3 default V</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co"># parameter table with metadata</span></a>
-<a class="sourceLine" id="cb20-2" data-line-number="2">md <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="st">  </span><span class="kw">tbl_params</span>()</a></code></pre></div>
-<pre><code>## # A tibble: 3 x 3
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># parameter table with metadata</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>md <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_params</span>(<span class="at">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_params</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 3
 ##   dataset param method                                  
 ##   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;                                   
 ## 1 default Ca    Portable XRF Spectrometer (Olympus X-50)
 ## 2 default Ti    Portable XRF Spectrometer (Olympus X-50)
 ## 3 default V     Portable XRF Spectrometer (Olympus X-50)</code></pre>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co"># default location table</span></a>
-<a class="sourceLine" id="cb22-2" data-line-number="2">md <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">  </span><span class="kw">tbl_locations</span>()</a></code></pre></div>
-<pre><code>## # A tibble: 2 x 2
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># default location table</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>md <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_locations</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 2 × 2
 ##   dataset location
 ##   &lt;chr&gt;   &lt;chr&gt;   
 ## 1 default MAJ-1   
 ## 2 default POC-2</code></pre>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># location table with metadata</span></a>
-<a class="sourceLine" id="cb24-2" data-line-number="2">md <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="st">  </span><span class="kw">update_locations</span>(</a>
-<a class="sourceLine" id="cb24-4" data-line-number="4">    <span class="st">&quot;MAJ-1&quot;</span>, </a>
-<a class="sourceLine" id="cb24-5" data-line-number="5">    <span class="dt">latitude =</span> <span class="fl">-64.298</span>, <span class="dt">longitude =</span> <span class="fl">44.819</span>, <span class="dt">lake =</span> <span class="st">&quot;Lake Major&quot;</span></a>
-<a class="sourceLine" id="cb24-6" data-line-number="6">  ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb24-7" data-line-number="7"><span class="st">  </span><span class="kw">update_locations</span>(</a>
-<a class="sourceLine" id="cb24-8" data-line-number="8">    <span class="st">&quot;POC-2&quot;</span>,</a>
-<a class="sourceLine" id="cb24-9" data-line-number="9">    <span class="dt">latitude =</span> <span class="fl">-65.985</span>, <span class="dt">longitude =</span> <span class="fl">44.913</span>, <span class="dt">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span></a>
-<a class="sourceLine" id="cb24-10" data-line-number="10">  ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb24-11" data-line-number="11"><span class="st">  </span><span class="kw">tbl_locations</span>()</a></code></pre></div>
-<pre><code>## # A tibble: 2 x 5
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># location table with metadata</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>md <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_locations</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;MAJ-1&quot;</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">latitude =</span> <span class="sc">-</span><span class="fl">64.298</span>, <span class="at">longitude =</span> <span class="fl">44.819</span>, <span class="at">lake =</span> <span class="st">&quot;Lake Major&quot;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_locations</span>(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;POC-2&quot;</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">latitude =</span> <span class="sc">-</span><span class="fl">65.985</span>, <span class="at">longitude =</span> <span class="fl">44.913</span>, <span class="at">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_locations</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 2 × 5
 ##   dataset location latitude longitude lake         
 ##   &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;        
 ## 1 default MAJ-1       -64.3      44.8 Lake Major   
 ## 2 default POC-2       -66.0      44.9 Pockwock Lake</code></pre>
-<p>The concept of a “dataset” is intended to refer to the source of a dataset, but could be anything that applies to data, params, and locations labelled with that dataset. In this case it would make sense to add that the source data is the <strong>mudata2</strong> package. The default name is “default”, which you can change in the <code>mudata()</code> function by passing <code>dataset_id</code> or by using <code>rename_datasets()</code>.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co"># default datasets table</span></a>
-<a class="sourceLine" id="cb26-2" data-line-number="2">md <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb26-3" data-line-number="3"><span class="st">  </span><span class="kw">tbl_datasets</span>()</a></code></pre></div>
-<pre><code>## # A tibble: 1 x 1
+<p>The concept of a “dataset” is intended to refer to the source of a
+dataset, but could be anything that applies to data, params, and
+locations labelled with that dataset. In this case it would make sense
+to add that the source data is the <strong>mudata2</strong> package. The
+default name is “default”, which you can change in the
+<code>mudata()</code> function by passing <code>dataset_id</code> or by
+using <code>rename_datasets()</code>.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># default datasets table</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>md <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_datasets</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 1
 ##   dataset
 ##   &lt;chr&gt;  
 ## 1 default</code></pre>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co"># datasets table with metadata</span></a>
-<a class="sourceLine" id="cb28-2" data-line-number="2">md <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb28-3" data-line-number="3"><span class="st">  </span><span class="kw">update_datasets</span>(<span class="dt">source =</span> <span class="st">&quot;R package mudata2&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb28-4" data-line-number="4"><span class="st">  </span><span class="kw">tbl_datasets</span>()</a></code></pre></div>
-<pre><code>## # A tibble: 1 x 2
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># datasets table with metadata</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>md <span class="sc">%&gt;%</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_datasets</span>(<span class="at">source =</span> <span class="st">&quot;R package mudata2&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_datasets</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 2
 ##   dataset source           
 ##   &lt;chr&gt;   &lt;chr&gt;            
 ## 1 default R package mudata2</code></pre>
-<p>All together, the param/location/dataset documentation looks like this:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">md_doc &lt;-<span class="st"> </span>md <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="st">  </span><span class="kw">update_locations</span>(</a>
-<a class="sourceLine" id="cb30-4" data-line-number="4">    <span class="st">&quot;MAJ-1&quot;</span>, </a>
-<a class="sourceLine" id="cb30-5" data-line-number="5">    <span class="dt">latitude =</span> <span class="fl">-63.486</span>, <span class="dt">longitude =</span> <span class="fl">44.732</span>, <span class="dt">lake =</span> <span class="st">&quot;Lake Major&quot;</span></a>
-<a class="sourceLine" id="cb30-6" data-line-number="6">  ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb30-7" data-line-number="7"><span class="st">  </span><span class="kw">update_locations</span>(</a>
-<a class="sourceLine" id="cb30-8" data-line-number="8">    <span class="st">&quot;POC-2&quot;</span>,</a>
-<a class="sourceLine" id="cb30-9" data-line-number="9">    <span class="dt">latitude =</span> <span class="fl">-63.839</span>, <span class="dt">longitude =</span> <span class="fl">44.794</span>, <span class="dt">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span></a>
-<a class="sourceLine" id="cb30-10" data-line-number="10">  ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb30-11" data-line-number="11"><span class="st">  </span><span class="kw">update_datasets</span>(<span class="dt">source =</span> <span class="st">&quot;R package mudata2&quot;</span>)</a></code></pre></div>
+<p>All together, the param/location/dataset documentation looks like
+this:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>md_doc <span class="ot">&lt;-</span> md <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_params</span>(<span class="at">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_locations</span>(</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;MAJ-1&quot;</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">latitude =</span> <span class="sc">-</span><span class="fl">63.486</span>, <span class="at">longitude =</span> <span class="fl">44.732</span>, <span class="at">lake =</span> <span class="st">&quot;Lake Major&quot;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_locations</span>(</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;POC-2&quot;</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">latitude =</span> <span class="sc">-</span><span class="fl">63.839</span>, <span class="at">longitude =</span> <span class="fl">44.794</span>, <span class="at">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_datasets</span>(<span class="at">source =</span> <span class="st">&quot;R package mudata2&quot;</span>)</span></code></pre></div>
 </div>
 <div id="adding-column-metadata" class="section level2">
 <h2>Adding column metadata</h2>
-<p>The <code>mudata()</code> constructor automatically generates a barebones columns table (<code>tbl_columns()</code>), but since the creation of the object we have created new columns that need documentation. Thus, before documenting columns using <code>update_columns()</code>, it is necessary to call <code>update_columns_table()</code> to synchronize the columns table with the object.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">md_doc &lt;-<span class="st"> </span>md_doc <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="st">  </span><span class="kw">update_columns_table</span>()</a></code></pre></div>
-<p>Then, you can use <code>update_columns()</code> to add information about various columns to the object.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co"># default columns table</span></a>
-<a class="sourceLine" id="cb32-2" data-line-number="2">md_doc <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb32-3" data-line-number="3"><span class="st">  </span><span class="kw">tbl_columns</span>()</a></code></pre></div>
-<pre><code>## # A tibble: 16 x 4
+<p>The <code>mudata()</code> constructor automatically generates a
+barebones columns table (<code>tbl_columns()</code>), but since the
+creation of the object we have created new columns that need
+documentation. Thus, before documenting columns using
+<code>update_columns()</code>, it is necessary to call
+<code>update_columns_table()</code> to synchronize the columns table
+with the object.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>md_doc <span class="ot">&lt;-</span> md_doc <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_columns_table</span>()</span></code></pre></div>
+<p>Then, you can use <code>update_columns()</code> to add information
+about various columns to the object.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># default columns table</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>md_doc <span class="sc">%&gt;%</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_columns</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 16 × 4
 ##    dataset table     column    type     
 ##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    
 ##  1 default data      dataset   character
@@ -853,68 +1003,85 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 14 default params    method    character
 ## 15 default datasets  dataset   character
 ## 16 default datasets  source    character</code></pre>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="co"># columns with metadata </span></a>
-<a class="sourceLine" id="cb34-2" data-line-number="2">md_doc <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb34-3" data-line-number="3"><span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;depth&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Depth in sediment core (cm)&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;sd&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Standard deviation uncertainty of n=3 values&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb34-5" data-line-number="5"><span class="st">  </span><span class="kw">tbl_columns</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb34-6" data-line-number="6"><span class="st">  </span><span class="kw">select</span>(dataset, table, column, description, type)</a></code></pre></div>
-<pre><code>## # A tibble: 16 x 5
-##    dataset table     column   description                          type    
-##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;                                &lt;chr&gt;   
-##  1 default data      dataset  &lt;NA&gt;                                 charact…
-##  2 default data      location &lt;NA&gt;                                 charact…
-##  3 default data      param    &lt;NA&gt;                                 charact…
-##  4 default data      depth    Depth in sediment core (cm)          integer 
-##  5 default data      value    &lt;NA&gt;                                 double  
-##  6 default data      sd       Standard deviation uncertainty of n… double  
-##  7 default locations dataset  &lt;NA&gt;                                 charact…
-##  8 default locations location &lt;NA&gt;                                 charact…
-##  9 default locations latitude &lt;NA&gt;                                 double  
-## 10 default locations longitu… &lt;NA&gt;                                 double  
-## 11 default locations lake     &lt;NA&gt;                                 charact…
-## 12 default params    dataset  &lt;NA&gt;                                 charact…
-## 13 default params    param    &lt;NA&gt;                                 charact…
-## 14 default params    method   &lt;NA&gt;                                 charact…
-## 15 default datasets  dataset  &lt;NA&gt;                                 charact…
-## 16 default datasets  source   &lt;NA&gt;                                 charact…</code></pre>
-<p>You’ll notice there’s a <code>type</code> column that is also automatically generated, which I suggest that you don’t mess with (it will get overwritten by default before you write the object to disk). If something is the wrong type, you should use the <code>mudate_*()</code> family of functions to fix the column type, then run <code>update_columns_table()</code> again. From the top, the documentation looks like this:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">md_doc &lt;-<span class="st"> </span>md <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb36-2" data-line-number="2"><span class="st">  </span><span class="kw">update_params</span>(<span class="dt">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb36-3" data-line-number="3"><span class="st">  </span><span class="kw">update_locations</span>(</a>
-<a class="sourceLine" id="cb36-4" data-line-number="4">    <span class="st">&quot;MAJ-1&quot;</span>, </a>
-<a class="sourceLine" id="cb36-5" data-line-number="5">    <span class="dt">latitude =</span> <span class="fl">-63.486</span>, <span class="dt">longitude =</span> <span class="fl">44.732</span>, <span class="dt">lake =</span> <span class="st">&quot;Lake Major&quot;</span></a>
-<a class="sourceLine" id="cb36-6" data-line-number="6">  ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb36-7" data-line-number="7"><span class="st">  </span><span class="kw">update_locations</span>(</a>
-<a class="sourceLine" id="cb36-8" data-line-number="8">    <span class="st">&quot;POC-2&quot;</span>,</a>
-<a class="sourceLine" id="cb36-9" data-line-number="9">    <span class="dt">latitude =</span> <span class="fl">-63.839</span>, <span class="dt">longitude =</span> <span class="fl">44.794</span>, <span class="dt">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span></a>
-<a class="sourceLine" id="cb36-10" data-line-number="10">  ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb36-11" data-line-number="11"><span class="st">  </span><span class="kw">update_datasets</span>(<span class="dt">source =</span> <span class="st">&quot;R package mudata2&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb36-12" data-line-number="12"><span class="st">  </span><span class="kw">update_columns_table</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb36-13" data-line-number="13"><span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;depth&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Depth in sediment core (cm)&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb36-14" data-line-number="14"><span class="st">  </span><span class="kw">update_columns</span>(<span class="st">&quot;sd&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Standard deviation uncertainty of n=3 values&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># columns with metadata</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>md_doc <span class="sc">%&gt;%</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_columns</span>(<span class="st">&quot;depth&quot;</span>, <span class="at">description =</span> <span class="st">&quot;Depth in sediment core (cm)&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_columns</span>(<span class="st">&quot;sd&quot;</span>, <span class="at">description =</span> <span class="st">&quot;Standard deviation uncertainty of n=3 values&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_columns</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(dataset, table, column, description, type)</span></code></pre></div>
+<pre><code>## # A tibble: 16 × 5
+##    dataset table     column    description                                 type 
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                                       &lt;chr&gt;
+##  1 default data      dataset   &lt;NA&gt;                                        char…
+##  2 default data      location  &lt;NA&gt;                                        char…
+##  3 default data      param     &lt;NA&gt;                                        char…
+##  4 default data      depth     Depth in sediment core (cm)                 inte…
+##  5 default data      value     &lt;NA&gt;                                        doub…
+##  6 default data      sd        Standard deviation uncertainty of n=3 valu… doub…
+##  7 default locations dataset   &lt;NA&gt;                                        char…
+##  8 default locations location  &lt;NA&gt;                                        char…
+##  9 default locations latitude  &lt;NA&gt;                                        doub…
+## 10 default locations longitude &lt;NA&gt;                                        doub…
+## 11 default locations lake      &lt;NA&gt;                                        char…
+## 12 default params    dataset   &lt;NA&gt;                                        char…
+## 13 default params    param     &lt;NA&gt;                                        char…
+## 14 default params    method    &lt;NA&gt;                                        char…
+## 15 default datasets  dataset   &lt;NA&gt;                                        char…
+## 16 default datasets  source    &lt;NA&gt;                                        char…</code></pre>
+<p>You’ll notice there’s a <code>type</code> column that is also
+automatically generated, which I suggest that you don’t mess with (it
+will get overwritten by default before you write the object to disk). If
+something is the wrong type, you should use the <code>mudate_*()</code>
+family of functions to fix the column type, then run
+<code>update_columns_table()</code> again. From the top, the
+documentation looks like this:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>md_doc <span class="ot">&lt;-</span> md <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_params</span>(<span class="at">method =</span> <span class="st">&quot;Portable XRF Spectrometer (Olympus X-50)&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_locations</span>(</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;MAJ-1&quot;</span>,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">latitude =</span> <span class="sc">-</span><span class="fl">63.486</span>, <span class="at">longitude =</span> <span class="fl">44.732</span>, <span class="at">lake =</span> <span class="st">&quot;Lake Major&quot;</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_locations</span>(</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;POC-2&quot;</span>,</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">latitude =</span> <span class="sc">-</span><span class="fl">63.839</span>, <span class="at">longitude =</span> <span class="fl">44.794</span>, <span class="at">lake =</span> <span class="st">&quot;Pockwock Lake&quot;</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_datasets</span>(<span class="at">source =</span> <span class="st">&quot;R package mudata2&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_columns_table</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_columns</span>(<span class="st">&quot;depth&quot;</span>, <span class="at">description =</span> <span class="st">&quot;Depth in sediment core (cm)&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_columns</span>(<span class="st">&quot;sd&quot;</span>, <span class="at">description =</span> <span class="st">&quot;Standard deviation uncertainty of n=3 values&quot;</span>)</span></code></pre></div>
 </div>
 <div id="writing-mudata-objects" class="section level2">
 <h2>Writing mudata objects</h2>
-<p>There are three possible formats to which mudata objects can be read: A directory of CSV files (one per table), a ZIP archive of the directory format, and a JSON encoding of the tables. You can write all of them using <code>write_mudata()</code> with a <code>filename</code> of the appropriate extension:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co"># write to directory</span></a>
-<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="kw">write_mudata</span>(poc_maj, <span class="st">&quot;poc_maj.mudata&quot;</span>)</a>
-<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="co"># write to ZIP</span></a>
-<a class="sourceLine" id="cb37-4" data-line-number="4"><span class="kw">write_mudata</span>(poc_maj, <span class="st">&quot;poc_maj.mudata.zip&quot;</span>)</a>
-<a class="sourceLine" id="cb37-5" data-line-number="5"><span class="co"># write to JSON</span></a>
-<a class="sourceLine" id="cb37-6" data-line-number="6"><span class="kw">write_mudata</span>(poc_maj, <span class="st">&quot;poc_maj.mudata.json&quot;</span>)</a></code></pre></div>
-<p>Then, you can read the file/directory using <code>read_mudata()</code>:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="co"># read from directory</span></a>
-<a class="sourceLine" id="cb38-2" data-line-number="2"><span class="kw">read_mudata</span>(<span class="st">&quot;poc_maj.mudata&quot;</span>)</a>
-<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="co"># read from ZIP</span></a>
-<a class="sourceLine" id="cb38-4" data-line-number="4"><span class="kw">read_mudata</span>(<span class="st">&quot;poc_maj.mudata.zip&quot;</span>)</a>
-<a class="sourceLine" id="cb38-5" data-line-number="5"><span class="co"># read from JSON</span></a>
-<a class="sourceLine" id="cb38-6" data-line-number="6"><span class="kw">read_mudata</span>(<span class="st">&quot;poc_maj.mudata.json&quot;</span>)</a></code></pre></div>
-<p>The convention of using &quot;.mudata.*&quot; isn’t necessary, but seems like a good idea to point potential data users in the direction of this package.</p>
+<p>There are three possible formats to which mudata objects can be read:
+A directory of CSV files (one per table), a ZIP archive of the directory
+format, and a JSON encoding of the tables. You can write all of them
+using <code>write_mudata()</code> with a <code>filename</code> of the
+appropriate extension:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># write to directory</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_mudata</span>(poc_maj, <span class="st">&quot;poc_maj.mudata&quot;</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># write to ZIP</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write_mudata</span>(poc_maj, <span class="st">&quot;poc_maj.mudata.zip&quot;</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"># write to JSON</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="fu">write_mudata</span>(poc_maj, <span class="st">&quot;poc_maj.mudata.json&quot;</span>)</span></code></pre></div>
+<p>Then, you can read the file/directory using
+<code>read_mudata()</code>:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read from directory</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">read_mudata</span>(<span class="st">&quot;poc_maj.mudata&quot;</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># read from ZIP</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">read_mudata</span>(<span class="st">&quot;poc_maj.mudata.zip&quot;</span>)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># read from JSON</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">read_mudata</span>(<span class="st">&quot;poc_maj.mudata.json&quot;</span>)</span></code></pre></div>
+<p>The convention of using “.mudata.*” isn’t necessary, but seems like a
+good idea to point potential data users in the direction of this
+package.</p>
 </div>
 <div id="more-information" class="section level2">
 <h2>More information</h2>
-<p>That is most of what there is to creating mudata objects. For more reading, I suggest looking at the documentation for <code>mudata()</code>, <code>update_locations()</code>, <code>mudata_prepare_column()</code>, and <code>read_mudata()</code>.</p>
+<p>That is most of what there is to creating mudata objects. For more
+reading, I suggest looking at the documentation for
+<code>mudata()</code>, <code>update_locations()</code>,
+<code>mudata_prepare_column()</code>, and
+<code>read_mudata()</code>.</p>
 </div>
 
 
